@@ -1,0 +1,94 @@
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{fit}
+\usetikzlibrary{calc}
+\usetikzlibrary{matrix}
+
+\tikzstyle{DER}=[
+	node distance=1cm
+]
+
+\tikzstyle{DERM}=[
+	row sep=1cm,
+	column sep=1cm
+]
+
+\tikzstyle{agregacion} = [
+rectangle,
+draw=blue!70!black!80,
+align=left,
+color=blue!50!black!100,
+text=black,
+very thick, 
+minimum width=6em, 
+minimum height=3em
+]
+
+\tikzstyle{entity} = [
+	rectangle,
+	draw=blue!70!black!80,
+	align=left,
+	color=blue!50!black!100,
+	text=black,
+	fill=blue!15!white!100, 
+	very thick, 
+	minimum width=6em, 
+	minimum height=3em
+]
+
+\tikzstyle{weak entity} = [
+	entity,
+	double, 
+	double distance=2pt
+]
+
+\tikzstyle{relationship} = [
+	diamond,
+	align=center,
+	draw=red!80,
+	color=red!80!black!150,
+	text=black,
+	fill=red!15!white!100,
+	very thick,
+	minimum width=2em,	
+	aspect=2
+]
+
+\tikzstyle{weak relationship} = [
+	relationship, 
+	double,
+	double distance=2pt,
+]
+
+\tikzstyle{rightOptional} = [-{Circle[open, length=5].Square[width=0.5]}]
+
+\tikzstyle{leftOptional} = [{Square[width=0.5].Circle[open,length=5]}-]
+
+\tikzstyle{attribute} = [
+	ellipse, 
+	draw=black,
+	very thick,
+	minimum width=5em,
+	minimum height=2em
+]
+
+\tikzstyle{attributePK} = [
+	attribute,
+	draw=orange!80!black!100,
+	fill=orange!15!white!100,
+	text=black
+]
+
+\tikzstyle{attributeM} = [
+	attribute,
+	double,
+	double distance=2pt
+]
+
+\tikzstyle{inheritance} = [
+	circle,
+	draw=black,
+	very thick,
+]

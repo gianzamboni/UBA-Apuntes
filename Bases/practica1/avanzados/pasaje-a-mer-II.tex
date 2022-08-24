@@ -1,0 +1,32 @@
+%Dado el siguiente diagrama de entidad-relacion imagine una situación para que este diagrama tenga sentido y descríbala a modo de requerimiento. Realice el Modelo Relacional asociado al diagrama
+%
+%\pagebreak
+%
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[scale=0.60]{img/MEREmpresa}
+%\end{figure}
+
+\textbf{MER}
+
+Producto(\PK{idProducto}, descripcion)
+
+Distribuidor(\PK{numDistribuidor}, nombre)
+
+Area(\PK{idArea}, nombre)
+
+Local(\PK{numLocal}, direccion)
+
+Deposito(\PK{numDeposito}, \FPK{Local} capacidad)
+
+Empleado(\PK{CUIL}, fechaIngreso, tipoContratacion)
+
+EmpleadoEfectivo( \FPK{CUIL}, cantHijos)
+
+EmpleadoEfectConGremio(\FPK{CUIL}, fechaAfiliacionGremio)
+
+EmpleadoEfectConPrepaga(\FPK{CUIL}, numAfiliado)
+
+trabajaEn(\FPK{numLocal}, \FPK{CUIL}, \FK{idArea}, cantHoras)
+
+distribuidoPor(\FPK{idProducto}, \FPK{numDistribuidor}, \FK{idArea})

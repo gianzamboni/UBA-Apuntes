@@ -1,0 +1,192 @@
+%\begin{enumerate}
+%	\item Una empresa contrata programadores y al momento del ingreso, éstos deben explicitar qué lenguajes de programación conocen. En ese mismo momento la empresa le toma un examen a cada programador para cada lenguaje de programación que conozca. Es necesario, además, llevar registro de la calificación obtenida. Para evaluar a los entrevistados, la empresa cuenta con exámenes estándar preparados, de los que se conoce la cantidad de ejercicios, el nivel de dificultad, la fecha de creación y el texto del examen.
+%	\item	¿Cómo modificaría el modelo conceptual del punto (a) si el examen se le tomara sólo a algunos de los programadores (tener en cuenta que sigue siendo de interés registrar los lenguajes conocidos por cada entrevistado)?
+%\end{enumerate}
+
+\subsubsection*{a)}
+\begin{center}
+	\textbf{DER}
+	\vspace*{1cm}
+	
+	\scalebox{1}{
+		\begin{tikzpicture}[.style={DER}]	
+		%% Entidades y realaciones
+		\node[entity]		(programador)												{Programador};
+		\node[relationship] (conoce)					[right=of programador]			{conoce};
+		\node[entity]		(lenguaje)					[right=of conoce]				{Lenguaje};
+		\node[entity]		(examen)					[above=of conoce]				{Examen};
+		
+		%%Atributos lenguaje
+		\node[attributePK]	(lenguajeIdLenguaje)		[right=of lenguaje]			{\PK{idLenguaje}};
+		\node[attribute]	(lenguajeNombre)			[below right=of lenguaje]		{nombre};
+		
+		%%Atributos examen
+		\node[attribute]	(examenDificultad)			[above= of examen]				{dificultad};
+		\node[attribute]	(examenCantEjercicios)		[left=of examenDificultad]		{cantEjercicios};
+		\node[attributePK]	(examenIdExamen)			[left=of examen]				{\PK{idExamen}};
+		\node[attribute]	(examenFechaCreacion)		[right=of examenDificultad]		{fechaCreacion};
+		\node[attribute]	(examenTexto)				[right=of examen]			{texto};
+		
+		%%Atributos programador
+		\node[attributePK]	(programadorIdProgramador)	[left=of programador]		{\PK{idProgramador}};
+		\node[attribute]	(programadorNombre)			[below left=of programador]		{nombre};
+		\node[attribute]	(programadorApellido)		[below=of programador]			{apellido};
+		
+		%%Atributos evalua
+		\node[attribute]	(conoceNota)	[below=of conoce]							{nota};
+		
+		
+		\path
+		%%Atributos examen
+		(examen)		edge 	(examenIdExamen)
+		(examen)		edge 	(examenCantEjercicios)
+		(examen)		edge 	(examenDificultad)
+		(examen)		edge	(examenFechaCreacion)
+		(examen)		edge	(examenTexto)
+		
+		%% Atributos lenguaje
+		(lenguaje)		edge 	(lenguajeIdLenguaje)
+		(lenguaje)	 	edge 	(lenguajeNombre)
+		
+		%%Atributos programador
+		(programador)	edge 	(programadorIdProgramador)
+		(programador)	edge 	(programadorNombre)
+		(programador)	edge 	(programadorApellido)
+		
+		%% Atributos conoce
+		(conoce)		edge	(conoceNota)
+		
+		%%Relacion conoce
+		(conoce)		edge				node[above, near end]	{N}	(programador)
+		(conoce)	edge	node[right, near end]{1}	(examen)	
+		;
+		
+		\path[rightOptional]
+		(conoce)	edge	node[above, near end]{1}	(lenguaje)
+		
+		;
+		
+		\end{tikzpicture}
+	}
+\end{center}
+
+\begin{multicols}{2}
+	
+	\textbf{MER}
+	
+	Programador(\PK{idProgramador}, nombre, apellido)
+	
+	Lenguaje	(\PK{idLenguaje}, nombre)
+	
+	Examen	(\PK{idExamen}, cantEjercicios, dificultad, fechaCreacion, texto)
+	
+	conoce(\FPK{idProgramador}, \FPK{idLenguaje}, \FK{examen}, nota)
+	
+	\columnbreak
+	\red{\textbf{Notas}}
+	\begin{itemize}
+		\item Las relaciones ternarias pueden tener atributos siempre y cuando\textbf{ no } sean identificatorios
+	\end{itemize}
+	\null\vfill
+\end{multicols}
+
+\newpage
+\subsubsection*{b)}
+\begin{center}
+	\textbf{DER}
+	\vspace*{1cm}
+	
+	\scalebox{1}{
+		\begin{tikzpicture}[.style={DER}]
+		
+		%%Entidades y relaciones
+		\node[entity]		(programador)												{Programador};
+		\node[relationship] (conoce)					[right=of programador]			{conoce};
+		\node[entity]		(lenguaje)					[right=of conoce]				{Lenguaje};
+		\node[relationship]	(evaluaA)					[above=of programador]			{evalua a};
+		\node[entity]		(examen)					[above=of evaluaA]				{Examen};
+		\node[relationship] (esSobre)					[above=of lenguaje]				{es sobre};
+		
+		%%Atributos examen
+		\node[attribute]	(examenDificultad)			[above= of examen]				{dificultad};
+		\node[attribute]	(examenCantEjercicios)		[left=of examenDificultad]		{cantEjercicios};
+		\node[attributePK]	(examenIdExamen)			[left=of examen]				{\PK{idExamen}};
+		\node[attribute]	(examenFechaCreacion)		[right=of examenDificultad]		{fechaCreacion};
+		\node[attribute]	(examenTexto)				[below left=of examen]			{texto};
+		
+		%%Atributos lenguaje
+		\node[attributePK]	(lenguajeIdLenguaje)		[right=of lenguaje]			{\PK{idLenguaje}};
+		\node[attribute]	(lenguajeNombre)			[below right=of lenguaje]		{nombre};
+		
+		%%Atributos programador
+		\node[attributePK]	(programadorIdProgramador)	[left=of programador]		{\PK{idProgramador}};
+		\node[attribute]	(programadorNombre)			[below left=of programador]		{nombre};
+		\node[attribute]	(programadorApellido)		[below=of programador]			{apellido};
+		
+		%% Atributos evaluaA
+		\node[attribute]	(evaluaANota)				[right=of evaluaA]			{nota};
+		
+		\path
+		%% Atributos examen
+		(examen)		edge 	(examenIdExamen)
+		(examen)		edge 	(examenCantEjercicios)
+		(examen)		edge 	(examenDificultad)
+		(examen)		edge	(examenFechaCreacion)
+		(examen)		edge	(examenTexto)
+		
+		%%Aributos lenguaje
+		(lenguaje)		edge 	(lenguajeIdLenguaje)
+		(lenguaje)	 	edge 	(lenguajeNombre)
+		
+		%%Atributos programador
+		(programador)	edge 	(programadorIdProgramador)
+		(programador)	edge 	(programadorNombre)
+		(programador)	edge 	(programadorApellido)
+		
+		%% Atributos evalua a
+		(evaluaA)		edge	(evaluaANota)
+		
+		%%Relacion conoce
+		(conoce)	edge	node[above, near end]	{N}	(programador)
+		
+		%%Relacion es sobre
+		(esSobre)	edge[in=east, out=north]	node[above, pos=0.95]	{M}	(examen)
+		;
+		
+		\path[rightOptional]
+		%% Relacion conoce
+		(conoce)	edge	node[above, near end]	{M}	(lenguaje)
+		
+		%% Relación evalua a
+		(evaluaA)	edge	node[right, near end]	{N}	(programador)
+		(evaluaA)	edge	node[right, near end]	{N}	(programador)
+		(evaluaA)	edge	node[right, near end]	{M}	(examen)
+		
+		%% Rleacion es Sobre
+		(esSobre)	edge	node[right, near end]	{1}	(lenguaje)
+		;
+		\end{tikzpicture}
+	}
+\end{center}
+
+\begin{multicols}{2}
+	
+	\textbf{MER}
+	
+	Programador(\PK{idProgramador}, nombre, apellido)
+	
+	Lenguaje	(\PK{idLenguaje}, nombre)
+	
+	Examen	(\PK{idExamen}, cantEjercicios, dificultad, fechaCreacion, texto, \FK{idLenguaje})
+	
+	conoce(\FPK{idProgramador}, \FPK{idLenguaje})
+	
+	evaluaA(\FPK{idExamen}, \FK{idProgramador}, nota)
+	
+	\columnbreak
+	\textbf{Restricciones adicionales:}
+	\begin{itemize}
+		\item Los examenes que evaluan a un programador deben ser sobre los lenguajes que conoce.
+	\end{itemize}
+\end{multicols}
+

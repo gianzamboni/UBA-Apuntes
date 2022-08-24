@@ -1,0 +1,245 @@
+%\begin{enumerate}
+%	\item Se quiere modelar mediante DER los datos de los empleados. De cada empleado se quiere conocer: legajo, nombre y apellido y de qué otro empleado depende.
+%	\item ¿Cómo se modificaría la solución del ejercicio anterior si de los empleados que son jefes necesitáramos conocer su número de celular?
+%	\item A los datos mencionados en el ejercicio anterior se le quiere agregar la información sobre el departamento en el que trabaja cada empleado. De los departamentos queremos saber su código, nombre y quién es el gerente.
+%	\item ¿Cómo cambiaría el modelo si además de saber en qué departamento trabaja actualmente un empleado se quisiera saber en qué departamentos trabajó históricamente? 
+%	\item Hay una restricción implícita que indica que nadie puede ser gerente de un departamento al que no pertenece. El modelo propuesto ¿garantiza su cumplimiento? De no ser así ¿podría modificarlo para que lo garantice? En cualquiera de los casos justifique su respuesta.
+%\end{enumerate}
+
+\begin{multicols}{2}
+	\subsubsection*{a)}
+	\hspace*{2cm}
+	\scalebox{1}{
+		\begin{tikzpicture}[.style={DER}]	
+		%% Entidades y realaciones
+		\node[entity]		(empleado)									{Empleado};
+		\node[relationship]	(dependeDe)			[below=of empleado]		{depende de};
+		
+		%%Atributos empleado	
+		\node[attributePK]	(empleadoLegajo)	[above=of empleado] 	 {\PK{legajo}};
+		\node[attribute]	(empleadoNombre)	[above left=of empleado] {nombre};
+		\node[attribute] 	(empleadoApellido) 	[left=of empleado] 		 {apellido};
+		
+		%%Nodos auxiliares para ejes
+		\node[]				(rEmpleado)			[right=of empleado]		{}; %%Auxiliar
+		
+		\path
+		%%Atributos empleado
+		(empleado)	edge (empleadoLegajo)
+		(empleado)	edge (empleadoNombre)
+		(empleado)	edge (empleadoApellido)
+		
+		%%Relaciones
+		(dependeDe) edge[in=south,out=east] node[right,xshift=0.1cm,pos=1]{supervisor} (rEmpleado.center)
+		(rEmpleado.center) edge[in=55, out=north] node[above, pos=0.95] {1} (empleado)
+		
+		;
+		
+		\path[rightOptional]
+		(dependeDe)	edge node[left,xshift=-0.1cm,pos=0.25]{supervisado} node[left, near end] {M} (empleado)
+		;
+		\end{tikzpicture}
+	}
+	
+	\textbf{Restricciones}
+	\begin{itemize}
+		\item Un empleado no puede depender de si mismo.
+	\end{itemize}		
+	\subsubsection*{b)}
+	\hspace*{2cm}
+	\scalebox{1}{
+		\begin{tikzpicture}[.style={DER}]	
+		%% Entidades y realaciones
+		\node[entity]		(empleado)												{Empleado};
+		\node[inheritance]	(inheritanceEmpleado)	[below=of empleado]				{D}; 
+		\node[]				(inheritanceEmpleadoN)	[left=of inheritanceEmpleado, xshift=1cm]	{tipoEmpleado};
+		\node[entity]		(jefe)	 				[below=of inheritanceEmpleado]	{Jefe};
+		
+		%% Atributos empleado
+		\node[relationship]	(dependeDe)				[right=of inheritanceEmpleado]	{depende de};
+		\node[attributePK]	(empleadoLegajo)		[above=of empleado] 	 	{\PK{legajo}};
+		\node[attribute]	(empleadoNombre)		[above left=of empleado] 				{nombre};
+		\node[attribute] 	(empleadoApellido) 		[left=of empleado] 		{apellido};
+		
+		%% Atributos jefe
+		\node[attribute]	(jefeCelular)			[left=of jefe] 					{celular};
+		
+		\path
+		%%Atributos empleado
+		(empleado)	edge (empleadoLegajo)
+		(empleado)	edge (empleadoNombre)
+		(empleado)	edge (empleadoApellido)
+		
+		%% Atributos jefe
+		(jefe) 		edge (jefeCelular)
+		
+		%% Herencias
+		(inheritanceEmpleado)	edge node[midway]{O} (empleado)
+		(inheritanceEmpleado)	edge (jefe)
+		
+		%%Relaciones
+		(dependeDe) edge[in=55, out=south] node[above, pos=0.95] {1} (jefe)
+		;
+		\path[rightOptional]
+		(dependeDe) edge[out=north, in=east] node[above, near end]{N} (empleado)
+		;
+		\end{tikzpicture}
+	}
+	
+	\textbf{Restricciones}
+	\begin{itemize}
+		\item Un jefe no puede depender de si mismo.
+	\end{itemize}		
+\end{multicols}
+
+\newpage
+\subsubsection*{c)}
+\begin{center}
+	\scalebox{1}{
+		\begin{tikzpicture}[.style={DER}]	
+		
+		%%Entidades y relaciones
+		\node[entity]		(empleado)												{Empleado};
+		\node[inheritance]	(inheritanceEmpleado) 	[below=of empleado]				{D}; 
+		\node[]				(inheritanceEmpleadoN)	[left=of inheritanceEmpleado, xshift=1cm]	{tipoEmpleado};
+		\node[entity]		(jefe)	 				[below=of inheritanceEmpleado]	{Jefe};
+		\node[relationship]	(dependeDe)				[right=of inheritanceEmpleado]	{depende de};
+		\node[]				(izqDependeDe)			[right=of dependeDe]			{}; %Auxiliar			
+		\node[relationship]	(trabajaEn) 			[right=of izqDependeDe] 		{trabaja en};
+		\node[entity]		(departamento)			[below=of trabajaEn] 			{Departamento};
+		\node[relationship]	(esGerenteDe)		[left=of departamento] 			{gerente de};
+		
+		%% Atributos empleado
+		\node[attributePK]	(empleadoLegajo)	[above=of empleado] 	{\PK{legajo}};
+		\node[attribute]	(empleadoNombre)	[above left=of empleado] 			{nombre};
+		\node[attribute] 	(empleadoApellido) 	[left=of empleado] 	{apellido};
+		
+		%%Atributos jefe
+		\node[attribute]	(jefeCelular)	[left=of jefe] {celular};
+		
+		%%Atributos departamento
+		\node[attributePK]	(departamentoCodigo)	[right=of departamento]	{\PK{codigo}};
+		\node[attribute]	(departamentoNombre)	[below right=of departamento] {nombre};	
+		
+		
+		\path
+		%%Atributos
+		(empleado)		edge (empleadoLegajo)
+		(empleado)		edge (empleadoNombre)
+		(empleado)		edge (empleadoApellido)
+		
+		(jefe) 			edge (jefeCelular)
+		
+		(departamento)	edge (departamentoCodigo)
+		(departamento)	edge (departamentoNombre)
+		
+		%%Herencias
+		(inheritanceEmpleado)	edge	node[midway]{O}	(empleado)
+		(inheritanceEmpleado)	edge 					(jefe)
+		
+		%%Relaciones
+		(dependeDe)	edge[in=north, out=south]		node[above, near end]	{1}	(jefe.50)
+		
+		(trabajaEn)	edge[in=east, out=north]	node[above, pos=0.95]	{N}	(empleado.15)
+		(trabajaEn) 		edge 				node[left, near end]	{1} (departamento)
+		
+		(esGerenteDe)		edge 				node[above, near end]	{1} (departamento)
+		;
+		%		
+		%		
+		\path[rightOptional]
+		(dependeDe.north) 	edge[in=east, out=north] 	node[below, near end]		{N}	(empleado.-15)
+		(esGerenteDe.west) 	edge[in=east, out=west] 	node[below left, near end] 	{1} (jefe.-15)
+		;
+		\end{tikzpicture}
+	}
+\end{center}
+\textbf{Restricciones}
+\begin{itemize}
+	\item Un jefe no puede depender de si mismo.
+	\item El gerente de un departamento debe trabajar en ese departamento.
+\end{itemize}	
+
+\newpage
+\subsubsection*{d)}
+\begin{center}
+	\scalebox{1}{
+		\begin{tikzpicture}[.style={DER}]	
+		
+		%%Entidades y relaciones
+		\node[entity]		(empleado)												{Empleado};
+		\node[inheritance]	(inheritanceEmpleado) 	[below=of empleado]				{D}; 
+		\node[entity]		(jefe)	 				[below=of inheritanceEmpleado]	{Jefe};
+		\node[relationship]	(dependeDe)				[right=of inheritanceEmpleado]	{depende de};
+		\node[]				(izqDependeDe)			[right=of dependeDe]			{}; %Auxiliar			
+		\node[relationship]	(trabajaEn) 			[right=of izqDependeDe] 		{trabaja en};
+		\node[entity]		(departamento)			[below=of trabajaEn] 			{Departamento};
+		\node[relationship]	(esGerenteDe)			[left=of departamento] 			{gerente de};
+		
+		%% Atributos empleado
+		\node[attributePK]	(empleadoLegajo)		[above left=of empleado] 		{\PK{legajo}};
+		\node[attribute]	(empleadoNombre)		[left=of empleado] 				{nombre};
+		\node[attribute] 	(empleadoApellido) 		[below left=of empleado] 		{apellido};
+		
+		%%Atributos jefe
+		\node[attribute]	(jefeCelular)			[left=of jefe] {celular};
+		
+		%%Atributos departamento
+		\node[attributePK]	(departamentoCodigo)	[right=of departamento]			{\PK{codigo}};
+		\node[attribute]	(departamentoNombre)	[below right=of departamento] 	{nombre};	
+		
+		%%Atributos empleado trabaja en
+		\node[attribute]	(trabajaEnHasta)		[right=of trabajaEn]		{hasta};
+		\node[attributePK]	(trabajaEnDesde)		[above=of trabajaEnHasta]		{\PK{desde}};
+		
+		%%EJES
+		\path
+		%%Atributos
+		(empleado)		edge (empleadoLegajo)
+		(empleado)		edge (empleadoNombre)
+		(empleado)		edge (empleadoApellido)
+		
+		(jefe) 			edge (jefeCelular)
+		
+		(departamento)	edge (departamentoCodigo)
+		(departamento)	edge (departamentoNombre)
+		
+		(trabajaEn)		edge (trabajaEnDesde)
+		(trabajaEn)		edge (trabajaEnHasta)
+		%%Herencias
+		(inheritanceEmpleado)	edge	node[midway]{O}	(empleado)
+		(inheritanceEmpleado)	edge 					(jefe)
+		
+		%%Relaciones
+		(dependeDe)	edge[in=north, out=south]		node[above, near end]	{1}	(jefe.50)
+		
+		(trabajaEn)	edge[in=east, out=north]	node[above, pos=0.95]	{N}	(empleado.15)
+		(trabajaEn) 		edge 				node[left, near end]	{M} (departamento)
+		
+		(esGerenteDe)		edge 				node[above, near end]	{1} (departamento)
+		;
+		%		
+		%		
+		\path[rightOptional]
+		(dependeDe.north) 	edge[in=east, out=north] 	node[below, near end]		{N}	(empleado.-15)
+		(esGerenteDe.west) 	edge[in=east, out=west] 	node[below left, near end] 	{1} (jefe.-15)
+		;
+		\end{tikzpicture}
+	}
+\end{center}
+\begin{multicols}{2}
+	\textbf{Restricciones}
+	
+	\begin{itemize}
+		\item Un jefe no puede depender de si mismo.
+		\item El gerente de un departamento debe trabajar en ese departamento.
+		\item Un empleado no puede trabajar en dos departamentos distintos en el mismo intervalo de tiempo (o en intervalos que se superponen).
+		\item Para un empleado que actualmente esté trabajando en un departamento, el atributo \textit{trabajaEn.hasta} será nulo.
+	\end{itemize}
+	
+	\red{
+		\paragraph{e)} El modelo propuesto no puede garantizar que se cumpla esta condición.
+		Se podría agregar una Entidad puesto y crear una ternaria con Departamento y Empleado, pero perderíamos el historial de trabajo. En este caso, la relación \textit{es gerente} desaparecería y se podría conseguir esa información consiguiendo todos los empleados que tienen una entrada con el puesto de gerencia en la nueva relación.
+	}
+	\paragraph{\red{Notas}} La relación \textit{trabajaEn} tiene un atributo \textit{hasta} que será null en varios casos. ¿Es necesario arreglar esto? Se podría tener una relación especial sin atributos para los trabajadores actuales y otra para el historial. Pero hay que ver como se guardaría la fecha en la que empezó a trabajar y, cuando alguien termina de trabajar, habría que actualizar dos tablas.
+\end{multicols}

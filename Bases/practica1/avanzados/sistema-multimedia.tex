@@ -1,0 +1,277 @@
+%\textbf{Sistema de gestión de contenido multimedial}.\\
+%Se precisa modelar datos para un sitio web que guarda contenido multimedia: foto o video. Para ambos tipos se guarda una descripción, un tamaño y un formato (jpg, png, mov, mp4, etc). Para los videos,
+%además, la duración del mismo y la resolución.\\
+%Cada contenido multimedia es posteado por un usuario. Los usuarios que se identifican con email y clave. Cada contenido multimedia (video o foto) puede tener comentarios introducidos por usuarios. Los comentarios poseen una fecha, hora y descripción y pueden tener varias respuestas por otros o por el mismo usuario que puso el comentario (la idea es similar a los comentarios de Facebook pero sin respuestas de respuestas). \\
+%Algunos usuarios son administradores del sitio y chequean si el contenido multimedia es adecuado o no. Si el contenido no es adecuado los administradores lo eliminan. Algo similar ocurre con los comentarios, pero en este caso el comentario no se borra sino que se coloca la leyenda “\textit{Contenido inadecuado}”. \\
+%En ambos casos es necesario saber cual de los administradores fue quien efectuó el análisis del contenido/comentario y además es necesario saber que usuarios postean contenido inadecuado (ya sea fotos, videos o comentarios) porque si el usuario pu-blica más de una cantidad x de contenido inadecuado, se lo deshabilita temporalmente. \\
+%Es necesario llevar registro de cuales son las inhabilitaciones que sufre un usuario.\\
+%El sitio tiene además publicidades en forma de video enviados por sponsors. Estas publicidades pueden insertarse (o no) al comienzo de algunos videos. La relevancia de una publicidad en un video puede ser calificada por los usuarios. Esta calificación tiene un puntaje (de 1 a 10) y un comentario. El modelo debe poder responder las siguientes consultas:
+%
+%\begin{itemize}
+%\item Los usuarios que han realizado la mayor cantidad de comentarios en el sitio
+%\item Los usuarios con mayor cantidad de contenido descartado
+%\item Todos los comentarios marcados como inadecuados por un administrador
+%\item Todos los contenidos multimedia descartados por un administrador
+%\item Los pares video-publicidad más relevantes.
+%\item Los administradores que nunca calificaron un comentario.
+%\end{itemize}
+
+
+\vspace*{-2cm}
+\begin{center}
+	\scalebox{0.8}{
+		\begin{tikzpicture}[DER]	
+		\node[entity] 		(archivo) 									{Archivo};
+		\node[inheritance]	(inhArchivo)	[left=of archivo, xshift=-2cm]			{D};
+		\node[entity] 		(foto)			[above left=of inhArchivo]	{Foto};
+		\node[entity] 		(video)			[below left=of inhArchivo]	{Video};
+		\node[relationship]	(posteadoPor)	[right=of archivo]			{posteado por};
+		\node[entity] 		(usuario)		[right=of posteadoPor]		{Usuario};
+		\node[inheritance]	(inhUsuario)	[above=of usuario]			{D};
+		\node[entity] 		(administrador) [above=of inhUsuario]		{Administrador};
+		\node[relationship]	(comentaA)		[above=of archivo]			{comenta a};
+		\node[entity] 		(comentario)	[above=of comentaA]		{Comentario};
+		\node[relationship]	(escritoPor)	[right=of comentario]	{escrito por};
+		\node[relationship]	(realiza)		[above=of administrador, yshift=4cm] {realiza};	
+		\node[entity] 		(chequeo)		[above=of realiza] 		{Chequeo};
+		
+		\node[inheritance]	(inhChequeoNota) [right=of chequeo]		{D};
+		\node[entity]		(aprobado)		 [above right=of inhChequeoNota] {Aprobado};
+		\node[entity]		(inadecuado)	 [below right=of inhChequeoNota] {Inadecuado};
+		
+		\node[inheritance] (inhChequeoTipo) [left=of chequeo]	{D};
+		\node[entity]	 	(deComentario)	[below left=of inhChequeoTipo] {De Comentario};
+		\node[entity]		(deArchivo)		[left=of inhChequeoTipo, xshift=-15cm] {De Archivo};
+		\node[relationship] (chequeaComentario)	[below= of deComentario] {chequea};
+		\node[relationship]	(chequeaArchivo)	[below= of deArchivo] {chequea};
+		
+		\node[relationship]	(realizaCalificacion) [below=of usuario] {realiza};	
+		
+		\node[entity] 		(calificacion)	[below=of realizaCalificacion] {Calificación};
+		
+		\node[relationship]	(respondeA)		[left=of comentario]		{responde a};
+		
+		\node[entity] (respuesta) [above=of respondeA] {Respuesta};
+		\node[relationship] (escribio) [above=of respuesta] {escribió};
+		
+		\node[relationship] (inserta)		[below=of video]	{inserta};	
+		\node[entity] 		(publicidad)	[below=of inserta] {Publicidad};
+		\node[relationship] (envio)	[left=of publicidad] {envió};
+		\node[entity] 		(sponsor)		[left=of envio] {Sponsor};
+		
+		\draw ($(publicidad.south west) + (-0.5cm, -0.5cm)$) rectangle ($(video.north east) + (0.5cm, 0.5cm)$);
+		
+		\node[relationship] (calificadoPor)	[right=of inserta, xshift=2cm] {calificado por};
+		
+		%% Atributos archivo
+		\node[attributePK]	(archivoIdArchivo)		[above right=of archivo] {\PK{idArchivo}};
+		\node[attribute]	(archivoDescripcion)	[below left=of archivo] {descripción};
+		\node[attribute]	(archivoFormato)	[below=of archivo] 	{formato};
+		\node[attribute]	(archivoTamaño)		[below right=of archivo] 	{tamaño};
+		
+		%% Atributos calificacion
+		\node[attributePK]	(calificacionIdCalificacion)	[above right=of calificacion] {\PK{idCalificacion}};
+		\node[attribute]	(calificacionNota)	[right=of calificacion]		{nota};
+		\node[attribute]	(calificacionComentario) [below right=of calificacion]	{comentario};
+		
+		%% Atributo chequeo
+		\node[attributePK]	(chequeoIdChequeo) [above=of chequeo] {\PK{idChequeo}};
+		
+		%% Atributo comentario
+		\node[attributePK] (comentarioIdComentario) [above right=of comentario] {\PK{idComentario}};
+		\node[attribute] (comentarioFecha)	[above left=of comentario, xshift=1cm, yshift=0.5cm] {fecha};
+		\node[attribute] (comentarioHora)	[above left=of comentario, xshift=1cm, yshift=1.5cm] {hora};
+		\node[attribute] (comentarioDescripcion) [above left=of comentario, xshift=2cm, yshift=2.5cm] {descripcion};
+		
+		%% Atributo publicidad
+		\node[attributePK] (publicidadIdPublicidad) [right=of publicidad] {idPublicidad};
+		
+		%% Atributos respuesta
+		\node[attributePK]	(respuestaIdRespuesta) [above left=of respuesta] {idRespuesta};
+		\node[attribute]	(respuestaDescripcion) [left=of respuesta]	{descripcion};
+		
+		%% Atributos sponsor
+		\node[attributePK]	(sponsorIdSponsor)	[above=of sponsor] {idSponsor};
+		\node[attribute]	(sponsorNombre)		[left=of sponsor]  {nombre};
+		
+		%% Atributos usuario
+		\node[attributePK]	(usuarioEmail)	[above right=of usuario, yshift=1cm]				{\PK{email}};
+		\node[attribute] [right=of usuario, yshift=1cm]					(usuarioClave)					{clave};
+		\node[attribute] [below right=of usuario]					(usuarioCantInhabilitaciones)	{cantInahibilitaciones};
+		
+		%% Atributos video
+		\node[attribute]	(videoDuracion)	 [left=of video]	{duración};
+		\node[attribute]	(videoResolucion)	[above left=of video]{resolucion};
+		
+		\path
+		
+		%% Atributo archivo
+		(archivo) edge (archivoIdArchivo)
+		(archivo) edge (archivoDescripcion)
+		(archivo) edge (archivoFormato)
+		(archivo) edge (archivoTamaño)
+		
+		%% Atributo calificacion
+		(calificacion) edge (calificacionIdCalificacion)
+		(calificacion) edge (calificacionNota)
+		(calificacion) edge (calificacionComentario)
+		
+		%% Atributo chequeo
+		(chequeo) edge (chequeoIdChequeo)
+		
+		%% Atributos comentario
+		(comentario) edge (comentarioIdComentario)
+		(comentario) edge[out=125, in=-45] (comentarioFecha)
+		(comentario) edge[out=125, in=east]  (comentarioHora)
+		(comentario) edge[out=125,in=-45]  (comentarioDescripcion)	
+		
+		
+		%% Atributo publicidad
+		(publicidad) edge (publicidadIdPublicidad)
+		
+		%% Atributos respuesta
+		(respuesta) edge (respuestaIdRespuesta)
+		(respuesta) edge (respuestaDescripcion)
+		%% Atributos sponsor
+		(sponsor) edge (sponsorIdSponsor)
+		(sponsor) edge (sponsorNombre)	
+		
+		%% Atributo usuario
+		(usuario) edge (usuarioEmail)
+		(usuario) edge (usuarioClave)
+		(usuario) edge (usuarioCantInhabilitaciones)
+		
+		%% Atributos video
+		(video) edge (videoDuracion)
+		(video) edge (videoResolucion)
+		
+		%% Inheritance archivo
+		(inhArchivo) edge (archivo)
+		(inhArchivo) edge (video)
+		(inhArchivo) edge (foto)
+		
+		%% Inheritance chequeo
+		(inhChequeoNota) edge node[above, pos=0.5]{nota} (chequeo)
+		(inhChequeoNota) edge (aprobado)
+		(inhChequeoNota) edge (inadecuado)
+		
+		%% Inheritance chequeo
+		(inhChequeoTipo) edge node[above, pos=0.5]{tipo} (chequeo)
+		(inhChequeoTipo) edge (deComentario)
+		(inhChequeoTipo) edge (deArchivo)
+		
+		%% Inheritance usuario
+		(inhUsuario) edge (administrador)
+		
+		%% Relacion calificado por
+		(calificadoPor) edge[out=east, in=west] node[above, near end]{N} (calificacion)
+		
+		%% Relación comenta a
+		(comentaA) edge node[left, near end]{N} (comentario)
+		
+		%% Relación chequea comentario
+		(chequeaComentario) edge node[right, near end]{1} (deComentario)
+		
+		%% Relación chequea archivo
+		(chequeaArchivo) edge node[right, near end]{1} (deArchivo)
+		
+		%% Relación escrito por
+		(escritoPor) edge node[above, near end]{N} (comentario)
+		
+		%% Relación escribió
+		(escribio) edge node[right, near end]{N} (respuesta)
+		
+		%% Relacion envió
+		(envio) edge node[above, near end]{N} (publicidad)
+		
+		%% Relación posteado por
+		(posteadoPor)	edge node[above, near end]{N} (archivo)
+		
+		%% Relacion realiza
+		(realiza)	edge node[right, near end]{N}(chequeo)
+		
+		%% Relacion realiza calificacion
+		(realizaCalificacion) edge node[right, near end]{N} (calificacion)
+		
+		(chequeaArchivo) edge[out=south, in=north west] ($(respondeA.west) + (-1cm, 0)$)
+		
+		%% Relacion responde
+		(respondeA)	edge node[right, near end]{N} (respuesta)
+		(escribio)  edge[out=north, in=west] ($(aprobado.north east) + (0,1cm)$)
+		
+		;
+		
+		
+		\path[rightOptional]
+		
+		%% Inheritance usuario
+		(inhUsuario) edge (usuario)
+		
+		%% Relacion calificado por
+		(calificadoPor) edge[out=west, in=east] node[above, near end]{1} 		($(video.east) + (0.5cm, -2cm)$)
+		%% Relación chequea comentario
+		(chequeaComentario) edge[out=south, in=north] node[right, pos=0.95]{1} (comentario)
+		
+		%% Relación chequea archivo
+		($(respondeA.west) + (-1cm, 0)$) edge[out=south east, in=145] node[above right, pos=0.95]{1} (archivo)
+		
+		%% Relacion comenta a
+		(comentaA)	edge node[left, near end]{1} (archivo)
+		
+		%% Relacion envió
+		(envio) edge node[above, near end]{1} (sponsor)
+		
+		%% Relación escribio
+		($(aprobado.north east) + (0,1cm)$) edge[out=east, in=east] node[above, pos=0.95]{1} (usuario)
+		
+		%% Relación escrito por
+		(escritoPor) edge[out=south, in=140] node[above, near end]{1} (usuario)
+		
+		%% Relacion inserta
+		(inserta)	edge node[right, near end]{N} (video)
+		(inserta)	edge node[right, near end]{M} (publicidad)
+		
+		%% Relación posteado por
+		(posteadoPor)	edge node[above, near end]{1} (usuario)
+		
+		%% Relacion realiza
+		(realiza)	edge node[right, pos=0.95]{1}(administrador)
+		
+		%% Relación realiza calificación
+		(realizaCalificacion) edge node[right, near end]{1} (usuario) 
+		
+		%% Relación responde a
+		(respondeA) edge node[above, near end]{1} (comentario)
+		;
+		\end{tikzpicture}	
+	}
+	
+\end{center}
+\begin{multicols}{2}
+	\paragraph{MER}
+	\begin{itemize}
+		\item[] Chequeo(\PK{idChequeo}, nota, tipo, \FK{email})
+		\item[] DeComentario(\FPK{idChequeo}, \FK{idArchivo})
+		\item[] DeArchivo(\FPK{idChequeo}, \FK{idComentario})
+		\item[] Comentario(\PK{idComentario}, fecha, hora, descripcion, \FK{email}, \FK{archivo})
+		\item[] Respuesta(\PK{idRespuesta}, descripcion, \FK{idComentario})
+		\item[] Usuario(\PK{email}, clave, cantInhabilitaciones, tipo)
+		\item[] Administrador(\FPK{email})
+		\item[] Archivo(\PK{idArchivo}, descripcion, formato, tamaño, tipo, \FK{email})
+		\item[] Video(\FPK{idArchivo}, resolucion, duracion)
+		\item[] Calificacion(\PK{idCalificacion}, nota, comentario, \FK{email}, \FK{idVideo, idPublicidad})
+		\item[] Publicidad(\PK{idPublicidad}, \FK{idSponsor})
+		\item[] Sponsor(\PK{idSponsor})
+		\item[] inserta(\FPK{idArchivo}, \FPK{idPublicidad})		
+	\end{itemize}
+
+	\columnbreak
+	\paragraph{Consultas}
+	\begin{itemize}
+		\item Se hace un join con \textit{Usuario}, y \textit{Comentario}. Se agrupa por \textit{Usuario.email} y se hace un count de la cantidad de filas de cada usuario. Nos quedamos con aquellos usuarios que dan count máximo.
+		\item Se hace un join con \textit{Usuario}, \textit{Archivo} por \textit{email}. Al resultado, se le hace join con \textit{DeArchivo} por \textit{idArchivo} y, a esto, otro join por \textit{idChequeo}. Agrupamos por usuario y hacemos count de los chequeos con \textit{tipo = inadecuado}. Nos quedamos con los que dan count máximo. 
+		\item Join con \textit{administrador}, \textit{chequeo}. Filtramos los que son \textit{tipo} de comentarios y del administrador deseado. Join del resultado con \textit{DeComentario} y \textit{Comentario}. 
+		\item Si más revelante es lo que mejor promedio de calificación tiene, entonces lo resolvemos con un join de inserta, calificacion. Hacemos un group by por \textit{idVideo, idPublicidad} y calculamos \textbf{AVG} para cada par. Entonces, filtramos aquellos que tengan mayor average.
+		\item Seleccionamos todos los administrador tal que todos sus chequeos son de tipo \textit{DeArchivo}. Podemos usar el ALL de postgres, si todos los chequeos de ese adminsitrador son de tipo \textit{DeArchivo}, entonces devolvemos ese administrador.
+	\end{itemize}
+\end{multicols}

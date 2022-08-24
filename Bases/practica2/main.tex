@@ -1,0 +1,869 @@
+\input{../document.setup}
+\usepackage{geometry}
+
+\title{Bases de datos - Práctica 2}
+\author{}
+
+\input{../page.setup}
+
+\input{../custom.commands}
+
+\begin{document}
+\input{../tikz.settings}
+\maketitle
+\tableofcontents
+\newpage
+\section{AR y CRT}
+\setlength{\columnsep}{0pt}
+\subsection{Ejercicio 1.1}
+\begin{multicols}{4}
+		\paragraph{a)} $R\cup S$
+	
+	\hspace*{0.063cm}
+	\begin{tabular}{| l | l |}
+		\hline
+		\rowcolor{TableHeader}\textbf{A} &  \textbf{B} \\
+		\hline
+		a & b\\
+		\hline
+		b & c\\
+		\hline
+		b & d\\
+		\hline
+		c & b\\
+		\hline
+		d & e\\
+		\hline
+		e & a\\
+		\hline
+	\end{tabular}
+	
+	\vfill\null
+	
+	\columnbreak
+	\paragraph{b)} $R-S$
+
+\hspace*{0.063cm}
+\begin{tabular}{| l | l |}
+	\hline
+	\rowcolor{TableHeader}\textbf{A} &  \textbf{B} \\
+	\hline
+	a & b\\
+	\hline
+	c & b\\
+	\hline
+	d & e\\
+	\hline
+\end{tabular}
+
+\vfill\null
+
+\columnbreak
+	\paragraph{c)} $R\times S$
+
+\hspace*{0.063cm}
+\begin{tabular}{| l | l | l | l |}
+	\hline
+	\rowcolor{TableHeader}\textbf{A} &  \textbf{B} & \textbf{S.B} &  \textbf{C}\\
+	\hline
+	a & b & b & c\\
+	\hline
+	a & b & e & a\\
+	\hline
+	a & b & b & d\\
+	\hline
+	b & c& b & c\\
+	\hline
+	b & c& e & a\\
+	\hline
+	b & c& b & d\\
+	\hline
+	c & b& b & c\\
+	\hline
+	c & b& e & a\\
+	\hline
+	c & b& b & d\\
+	\hline
+	d & e& b & c\\
+	\hline
+	d & e& e & a\\
+	\hline
+	d & e& b & d\\
+	\hline
+\end{tabular}
+
+\columnbreak
+\paragraph{d)} $R\bowtie S$
+
+\hspace*{0.063cm}
+\begin{tabular}{| l | l | l | l |}
+	\hline
+	\rowcolor{TableHeader}\textbf{A} &  \textbf{B} &   \textbf{C}\\
+	\hline
+	a & b & c \\
+	\hline
+	a & b & d \\
+	\hline
+	c & b & c \\
+	\hline
+	c & b & d\\
+	\hline
+	d & e & a\\
+	\hline
+\end{tabular}
+\end{multicols}
+
+\begin{multicols}{4}
+	\paragraph{e)} $\pi_B(R)$
+	
+	\hspace*{0.063cm}
+	\begin{tabular}{| l | }
+		\hline
+		\rowcolor{TableHeader} \textbf{B} \\
+		\hline
+		 b\\
+		\hline
+		 c\\
+		\hline
+		 e\\
+		\hline
+	\end{tabular}
+	
+	\vfill\null
+	
+	\columnbreak
+	\paragraph{f)} $\sigma_{A=C}(R\times S)$
+	
+\hspace*{0.063cm}
+\begin{tabular}{| l | l | l | l |}
+	\hline
+	\rowcolor{TableHeader}\textbf{A} &  \textbf{B} & \textbf{S.B} &  \textbf{C}\\
+	\hline
+	a & b & e & a\\
+	\hline
+	c & b& b & c\\
+	\hline
+\end{tabular}	
+	\vfill\null
+	
+	\columnbreak
+	\paragraph{g)} $S \div (T \bowtie S)$
+	
+	\hspace*{0.063cm}
+	\red{$T \bowtie S$ es una relacion con dos tuplas de $S$, ¿que pasa aca?}
+	\vfill\null
+	\columnbreak
+	\paragraph{h)} $R\bowtie_{R.B < S.C} S$
+
+\hspace*{0.063cm}
+\begin{tabular}{| l | l | l | l |}
+	\hline
+	\rowcolor{TableHeader}\textbf{A} &  \textbf{B} &   \textbf{C}\\
+	\hline
+	a & b & c \\
+	\hline
+	a & b & d \\
+	\hline
+	c & b & c \\
+	\hline
+	c & b & d\\
+	\hline
+\end{tabular}
+\end{multicols}
+\begin{multicols}{2}
+\subsection{Ejercicio 1.2}
+\begin{itemize}
+	\item[] $\rho(R_1,~R)$
+	\item[] $\rho(a \rightarrow a_1,~R_1)$
+	\item[] $\rho(RES,~R - \pi_a(\sigma_{a > a_1}(R\times R_1)))$
+\end{itemize}
+
+	\subsection{Ejercicio 1.3}
+	\begin{itemize}
+		\item[] $\rho(R_1,~R)$
+		\item[] $\rho(a \rightarrow a_1,~R_1)$
+		\item[] $\rho(RES,~R - \pi_{a, b}(\sigma_{a = a_1 \land b > b_1}(R\times R_1)))$
+	\end{itemize}
+	
+	\subsection{Ejercicio 1.4}
+	\begin{itemize}
+		\item[] $\rho(R_1,~R)$
+		\item[] $\rho(a \rightarrow a_1,~R_1)$
+		\item[] $\rho(RES4,~\pi_{a, b}(\sigma_{a = a_1 \land b \neq b_1}(R\times R_1)))$
+	\end{itemize}
+	
+	\subsection{Ejercicio 1.5}
+	\begin{itemize}
+		\item[] $\rho(R_1,~R)$
+		\item[] $\rho(a \rightarrow a_1,~R_1)$
+		\item[] $\rho(R_2,~R)$
+		\item[] $\rho(a \rightarrow a_2,~R_2)$
+		\item[] $\rho(RES,~\pi_{a, b}(\sigma_{a = a_1 \land b \neq b_1 \land a = a_2 \land b \neq b_2 \land b_1 \neq b_2}(R\times R_1\times R_2)))$
+	\end{itemize}	
+\end{multicols}
+
+\newpage
+	\subsection{Ejercicio 1.6}
+\paragraph{CRT}
+\begin{itemize}
+	\item[] $\rho(JOIN,~ \text{invoiceline} \bowtie \text{invoice} \bowtie \text{customer})$
+	\item[] $\rho(JOIN_1,~JOIN)$
+	\item[] Renombramos todos los attributos de $JOIN_1$ para que no haya incertidumbre agregandoles un 1 al final.
+	\item[] $\rho(PROD, JOIN \times JOIN_1)$
+	\item[] $\rho(RES,~\pi_{\text{first\_name}}(PROD - \sigma_{\text{quantity} < \text{quantity}_1}(PROD)))$
+\end{itemize}
+
+\paragraph{AR}
+\begin{itemize}
+	\item [] $\{~t~/ \exists~il,i,c~( il\in \text{invoiceline}~\land~i\in \text{invoice}~\land~c\in \text{customer}~\land~ \text{esMaximaCantidad}(il)~\land~\text{esDelCliente}(il,i,c)\\ ~\land~t.\text{nombre} = c.\text{firstName})\}$
+	\item[] $\text{esMaximaCantidad}(il) = \forall~il_1~( il_1\in \text{invoiceline} \Rightarrow il.\text{quantity} > il_1.\text{quantity})$
+	\item[] $\text{esDelCliente}(il,i,c) = il.\text{invoiceId} = i.\text{invoiceId}~\land~ i.\text{customerId} = c.\text{customerId}$
+\end{itemize}
+\section{AR, CRT y SQL}
+\subsection{Ejercicio 2.1}
+	\subsubsection{}
+\paragraph{SQL}
+\begin{minted}[tabsize=4]{sql}
+SELECT 
+	first_name,
+	last_name
+FROM customer
+WHERE country = 'Brazil';
+\end{minted}
+\paragraph{AR}
+\begin{itemize}
+	\item[] $\pi_{\text{first\_name, last\_name}}(\sigma_{\text{country} = 'Brazil'}(\text{customer}))$
+\end{itemize}
+
+\paragraph{CRT} 
+\begin{itemize}
+	\item[] $\{ t / \exists~c~(c\in \text{customer} \land c.\text{country} = 'Brazil' \land t.\text{nombre} = c.\text{first\_name} \land t.\text{apellido} = c.\text{last\_name})\}$
+\end{itemize}
+
+\newpage
+\subsubsection{}
+\paragraph{SQL}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT
+	c.first_name as name,
+	c.last_name as last_name,
+	i.invoice_id as invoice_number,
+	i.invoice_date as invoice_date
+FROM
+	customer c
+	JOIN invoice i ON i.customer_id = c.customer_id
+ORDER BY c.first_name;
+\end{minted}
+\paragraph{AR}
+\begin{itemize}
+	\item[] $\pi_{\text{first\_name, last\_name, invoice\_id, invoice\_date}}(\text{invoice} \bowtie \text{customer})$
+\end{itemize}
+
+\paragraph{CRT} 
+\begin{itemize}
+	\item[] $\{ t / \exists~c,i~(c\in \text{customer} \land i\in invoice \land c.\text{customer\_id} = i.\text{customer\_id} \\ \land t.\text{nombre} = c.\text{last\_name} \land t.\text{invoice\_id} = i.\text{invoice\_id} \land t.\text{fecha} = i.\text{invoice\_id})\}$
+\end{itemize}
+
+\subsubsection{}
+\paragraph{SQL}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT
+	tr.name as track,
+	ar.name as artist
+FROM
+	track tr
+	JOIN album al on tr.album_id = al.album_id
+	JOIN artist ar on ar.artist_id = al.artist_id;
+\end{minted}
+\paragraph{AR}
+\begin{itemize}
+	\item[] $\rho($name $\rightarrow$ track\_name, track)
+	\item[] $\rho($name $\rightarrow$ artist\_name, artist)
+	\item[] $\pi_{\text{track\_name, artist\_name}}($track $\bowtie$ album $\bowtie$ artist)
+\end{itemize}
+
+\paragraph{CRT} 
+\begin{itemize}
+	\item[] $\{ t / \exists~ar,~al,~tr~(tr\in \text{track} \land
+		al\in\text{album} \land ar\in\text{artist} \\ 
+		\land \text{esDelArtista}(tr,al,ar) \land
+		t.\text{track\_name} = tr.\text{name} \land t.\text{artist\_name} = ar.\text{name}\}
+		$
+	\item[] esDelArtista($tr,al,ar$) = $tr.\text{album\_id} = al.\text{album\_id}\land al.\text{artist\_id} = ar.\text{artist\_id}$ 
+\end{itemize}
+
+\newpage
+\subsubsection{}
+%\paragraph{SQL}
+%\begin{minted}{postgresql}
+%SELECT 
+%	pl.name
+%FROM
+%	playlist pl
+%	JOIN playlist_track pt ON pl.playlist_id = pt.playlist_id
+%	JOIN track tr ON tr.track_id = pt.track_id
+%	JOIN media_type mt ON tr.media_type_id = mt.media_type_id
+%GROUP BY pl.name
+%HAVING COUNT(mt.name = 'MPEG audio file') > 1;
+%
+%\end{minted}
+\paragraph{AR}
+\begin{itemize}
+	\item[] $\rho(\text{name}\rightarrow\text{pl\_name}, \text{playlist})$
+	\item[] $\rho(\text{name}\rightarrow\text{tr\_name}, \text{track})$
+	\item[] Consigo todos los tracks con formato MPEG que pertenecen a alguna lista:
+	\item[] $\rho(MPEGS, \sigma_{\text{name} = '\textit{MPEG audio file}'}(\text{playlist} \bowtie \text{playlist\_track} \bowtie \text{media\_type})$
+	\item[] $\rho(MPEGS_1, MPEGS)$
+	\item[] Renombro todos los atributos de $MPEGS_1$ agregándoles un 1 al final.
+	\item $\rho(RES, \pi_{\text{pl\_name}}(\sigma_{\text{name} \neq \text{name}_1 \land \text{pl\_name} = \text{pl\_name}_1}(MPEGS\times MPEGS_1)))$
+\end{itemize}
+
+\paragraph{CRT} 
+\begin{itemize}
+	\item[] $\{ t / \exists~pl,~tr_1,~tr_2,~pt_1,~pt_2, mt~(pl\in \text{playlist} \land tr_1,~tr_2\in\text{track} \land pt_1,~pt_2\in\text{playlist\_track} \land mt\in \text{media\_type} \\ 
+	\land~\text{sonDistintosTracks}(tr_1, tr_2)~\land~ \text{pertenecenALaMismaLista}(tr_1,tr_2,pt_1,pt_2, pl) \\ ~\land~ 
+	\text{tienenElMismoFormato}(tr_1, tr_2) ~\land~
+	\text{esMPEG}(tr_1) ~\land~
+	t.\text{name} = pl.\text{name}
+	\}
+	$
+	\item[] sonDistintosTracks($tr_1,tr_2$) = $tr_1.\text{track\_id} \neq tr_2.\text{track\_id}\land al.\text{artist\_id} = ar.\text{artist\_id}$ 
+	
+	\item[] pertenecenALaMismaLista($tr_1,tr_2,pt_1,pt_2, pl$) = $pt_1.\text{playlist\_id} = pl.\text{playlist\_id}~\land~ pt_1.\text{track\_id} = tr_1.\text{track\_id}  \\~\land~ pt_2.\text{playlist\_id} = pl.\text{playlist\_id} ~\land~ pt_2.\text{track\_id} = tr_2.\text{track\_id}$
+	
+	\item[]
+\end{itemize}
+
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT pl.name
+FROM
+	playlist pl
+	JOIN playlist_track pt ON pt.playlist_id = pl.playlist_id
+	JOIN track tr ON tr.track_id = pt.track_id
+	JOIN album al ON al.album_id = tr.album_id
+	JOIN artist ar ON ar.artist_id = al.artist_id
+GROUP BY pl.name
+HAVING COUNT(ar.name='Iron Maiden') > 10;
+\end{minted}
+
+Es posible realziar esta consulta tanto en CRT como en AR. En CRT, implicaría realizar el join de todas las tabla y, luego, realizar la productoria de la relación resultante consigo misma 11 veces. En AR, de manera similar, deberiamos escribir implicitamente 11 comparaciones que indiquen si una lista, tiene por lo menos 11 tracks de iron maiden.
+
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT
+	pl.name as playlist_name,
+	COUNT(DISTINCT album_id) as album_quantity
+FROM
+	playlist pl
+	JOIN playlist_track pt ON pt.playlist_id = pl.playlist_id
+	JOIN track tr ON tr.track_id = pt.track_id
+GROUP BY pl.name;
+\end{minted}
+
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT em.first_name
+FROM
+	employee em
+	JOIN invoice inv ON em.employee_id = inv.customer_id
+	JOIN invoice_line il ON il.invoice_id = inv.invoice_id
+WHERE date_part('year', age(em.birth_date)) > 25
+GROUP BY em.employee_id
+HAVING COUNT(*) > 10;
+\end{minted}
+
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT
+	customer.first_name as name,
+	invoice.invoice_id as invoice_number,
+	invoice.invoice_date as invoice_date
+FROM
+	customer
+	RIGHT OUTER JOIN invoice ON invoice.customer_id = customer.customer_id;
+\end{minted}
+
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT DISTINCT em.first_name
+FROM
+	employee em
+	JOIN customer cu ON cu.support_rep_id = em.employee_id
+WHERE cu.customer_id IN 
+	(SELECT cu.customer_id
+	 FROM
+		invoice inv
+		JOIN customer cu ON inv.customer_id = cu.customer_id
+		GROUP BY cu.customer_id
+		HAVING COUNT(*) > 10
+	);
+\end{minted}
+
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT 
+	em.first_name as employee_first_name,
+	em.last_name as employee_last_name,
+	bs.first_name as boss_first_name,
+	bs.last_name as boss_last_name
+ FROM
+ 	employee em
+	JOIN employee bs ON em.reports_to = bs.employee_id;
+\end{minted}
+
+\newpage
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT 
+	em.first_name as employee_first_name,
+	em.last_name as employee_last_name,
+	bs.first_name as boss_first_name,
+	bs.last_name as boss_last_name
+FROM
+	employee em
+	LEFT OUTER JOIN employee bs ON em.reports_to = bs.employee_id;
+\end{minted}
+
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT 
+	cu.customer_id,
+	cu.first_name,
+	cu.last_name,
+	COUNT(*) / COUNT(DISTINCT inv.invoice_id) as quantity
+FROM 
+	customer cu
+	JOIN invoice inv ON cu.customer_id = inv.customer_id
+	JOIN invoice_line il ON il.invoice_id = inv.invoice_id
+GROUP BY cu.customer_id;
+\end{minted}
+
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT
+	em.employee_id,
+	em.first_name as employee_first_name,
+	em.last_name as employee_last_name,
+	COUNT(mt.name = 'Rock') as rock_tracks_selled
+FROM
+	employee em
+	JOIN customer cu ON em.employee_id = cu.support_rep_id
+	JOIN invoice inv ON inv.customer_id = inv.customer_id
+	JOIN invoice_line il ON il.invoice_id = inv.invoice_id
+	JOIN track tr ON il.track_id = tr.track_id
+	JOIN media_type mt ON tr.media_type_id = mt.media_type_id
+GROUP BY em.employee_id;
+\end{minted}
+
+\subsection{Ejercicio 2.2}
+\subsubsection{}
+\paragraph{SQL}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT DISTINCT s.bar
+FROM
+	sirve s
+	JOIN gusta g ON s.cerveza = g.cerveza
+WHERE g.persona = 'Juan K';
+\end{minted}
+
+\paragraph{CRT}
+\begin{itemize}
+\item [] $\pi_{\text{bar}}(\sigma_{\text{persona} = \text{'Juan K'}}(\text{GUSTA} \bowtie \text{SIRVE}))$
+\end{itemize}
+\paragraph{AR}
+\begin{itemize}
+\item[] $\{t~/~\exists g,s (s\in\text{SIRVE} \land g\in\text{GUSTA} \land g.\text{persona} = \text{'Juan K'}\land g.\text{cerveza} = s.\text{cerveza} \land t.\text{bar} = s.\text{bar})\}$
+\end{itemize}
+\subsubsection{}
+\paragraph{SQL}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT s.persona
+FROM 
+	sirve s
+	JOIN gusta g ON g.cerveza = s.cerveza
+	JOIN frecuenta f ON s.bar = f.bar AND g.persona = f.persona;
+\end{minted}
+
+
+\paragraph{CRT}
+\begin{itemize}
+\item [] $\rho(RES22B,~\pi_{\text{persona}}(\text{GUSTA} \bowtie \text{SIRVE} \bowtie \text{FRECUENTA}))$	
+\end{itemize}
+
+\paragraph{AR}
+\begin{itemize}
+\item[] $\{t~/~\exists g,s,f (s\in\text{SIRVE} \land g\in\text{GUSTA} \land f\in\text{FRECUENTA} \\ \land g.\text{cerveza} = s.\text{cerveza} \land s.\text{bar} = f.\text{bar} \land  g.\text{persona} = g.\text{persona})\}$
+\end{itemize}
+\subsubsection{}
+\paragraph{SQL}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT persona
+FROM frecuenia
+EXCEPT 
+	(SELECT s.persona
+	 FROM 
+		sirve s
+		JOIN gusta g ON g.cerveza = s.cerveza
+		JOIN frecuenta f ON s.bar = f.bar AND g.persona = f.persona
+	)
+\end{minted}
+
+
+\paragraph{CRT}
+\begin{itemize}
+\item[] $\pi_{\text{persona}}(FRECUENTA) - RES22B$
+\end{itemize}
+
+\paragraph{AR}
+\begin{itemize}
+	\item[] $\{ t / \exists~ g~ (g\in\text{GUSTA} \land \text{noFrecuentaNingunBarQueSirvaAlgoQueLeGuste}(g) \land t.\text{persona} = g.\text{persona})\} $
+	
+	\item[] $\text{noFrecuentaNingunBarQueSirvaAlgoQueLeGuste}(g) = \forall~ s~(\text{esUnBarQueLeGusta}(s,g) \Rightarrow noFrecuenta(g,s))$
+	
+	\item[] esUnBarQueSirveAlgoQueLeGusta$(s,g) = s\in SIRVE \land \exists~g1~(g1\in\text{GUSTA} \land g1.\text{persona} = g.\text{persona} \land s.\text{cerveza} = g1.\text{cerveza})$
+	
+	\item[] noFrecuenta$(s,g) = \nexists~f~(f\in\text{FRECUENTA} \land f.\text{bar} = s.\text{bar}\land f.\text{persona} = g.\text{persona})$
+\end{itemize}
+
+\subsubsection{}
+\paragraph{SQL}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT f.persona
+FROM frecuenia f
+GROUP BY f.persona
+HAVING COUNT(*) = (
+	SELECT COUNT(DISTINCT s.bar)
+	 FROM sirve s
+	)
+\end{minted}
+
+
+\paragraph{CRT}
+\begin{itemize}
+	\item[] $\rho(TodosLosBares, \pi_{\text{bar}}(\text{SIRVE}))$
+	\item[] $\text{FRECUENTA} \div~TodosLosBares$
+\end{itemize}
+
+\paragraph{AR}
+\begin{itemize}
+	\item[] $\{ t / \exists~ f~ (f\in\text{FRECUENTA} \land \text{frecuentaTodosLosBares}(f) \land t.\text{persona} = f.\text{persona})\} $
+	
+	\item[] $\text{frecuentaTodosLosBares}(f) = \forall~ s~(s\in\text{SIRVE} \Rightarrow \\ \exists~f1 (f1\in\text{FRECUENTA} \land f1.persona = f.persona \land s.bar = f1.bar)))$
+\end{itemize}
+
+\subsection{Ejercicio 2.3}
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT
+	al.album_id,
+	al.title
+FROM
+	album al
+	JOIN track tr ON tr.album_id = al.album_id
+	JOIN playlist_track pt ON pt.track_id = tr.track_id
+GROUP BY al.album_id
+HAVING COUNT(DISTINCT pt.playlist_id) = (
+	SELECT COUNT(*) 
+	FROM playlist
+	)	
+\end{minted}
+
+\newpage
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT
+	al.album_id,
+	al.title
+FROM
+	album al
+	JOIN track tr ON tr.album_id = al.album_id
+	JOIN playlist_track pt ON pt.track_id = tr.track_id
+GROUP BY al.album_id
+HAVING COUNT(DISTINCT pt.playlist_id) = 
+	(SELECT COUNT(*) 
+	FROM playlist
+	)	
+\end{minted}
+
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT
+	ar.name
+FROM
+	artist ar
+	JOIN album al ON al.artist_id = ar.artist_id
+	JOIN track tr ON al.album_id = tr.album_id
+	JOIN playlist_track pt ON pt.track_id = tr.track_id
+GROUP BY ar.name
+HAVING COUNT(DISTINCT al.album_id) = (
+	SELECT MIN(ql.pl_albums)
+	FROM
+		(SELECT
+			ar.name, 
+			COUNT(DISTINCT al.album_id) as pl_albums
+		FROM 
+			artist ar
+			JOIN album al ON al.artist_id = ar.artist_id
+			JOIN track tr ON tr.album_id = al.album_id
+			JOIN playlist_track pt ON pt.track_id = tr.track_id
+		GROUP BY ar.name) ql
+	)
+\end{minted}
+
+\newpage
+\subsection{Ejercicio 2.4}
+\subsubsection{}
+\paragraph{SQL}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT pl.name
+FROM
+	playlist pl
+	JOIN playlist_track pt ON pl.playlist_id = pt.playlist_id
+	JOIN track tr ON tr.track_id = pt.track_id
+	JOIN album al ON al.album_id = tr.album_id
+	JOIN artist ar ON ar.artist_id = al.artist_id
+GROUP BY pl.name
+HAVING 
+	COUNT(ar.name = 'Black Sabbath') = 0 
+	AND COUNT(ar.name = 'Chico Buarque') = 0;
+\end{minted}
+
+\paragraph{AR}
+\begin{itemize}
+\item[] $\rho(\text{name} \to \text{playlist\_name}, \text{ playlist})$
+\item[] $\rho(\text{name} \to \text{track\_name}, \text{ track})$
+\item[] $\rho(\text{name} \to \text{artist\_name}, \text{ artist})$
+\item[] $\rho(todaInfo,~\text{playlist} \bowtie \text{playlist\_track} \bowtie \text{track} \bowtie \text{artist})$
+\item[] $\rho(listasSabathBuarque,~\sigma_{\text{artist\_name = 'Black Sabbath' } \lor \text{ artist\_name = 'Chico Buarque'}}(todaInfo))$
+\item[] $\pi_{\text{playlist\_name}}(playlist) - \pi_{\text{playlist\_name}}(listaSabbathBuarque)$
+\end{itemize}
+
+\paragraph{CRT}
+\begin{itemize}
+\item[] $\{ t~/~\exists pl~(pl\in\text{playlist} \land t.\text{name} = pl.\text{name} \land \text{noTieneSabbathNiBuarque}(pl))\}$
+
+\item[] noTieneSabbathNiBuarque$(pl) = \forall pt~(pt\in\text{playlitst\_track}\land pt.\text{playlist\_id} = pl.\text{playlist\_id} \Rightarrow \nexists~tr(tr\in\text{track} \land tr.\text{track\_id} = pt.\text{track\_id} \land \text{esDeSabatthOBuarque}(tr)))$
+
+\item[] esDeSabbathOBuarque$(tr) = \exists ar,al~ (ar\in\text{artist} ~\land~ al\in\text{album} ~\land~ tr.\text{album\_id} = al.\text{album\_id} \\ \land~ al.\text{artist\_id} = ar.\text{artist\_id} ~\land (ar.\text{artist\_name} = \text{'Black Sabbath' } \lor ar.\text{artist\_name} = \text{'Chico Buarque'}))$
+\end{itemize}
+
+\subsubsection{}
+\paragraph{SQL}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT
+	cu.customer_id,
+	cu.first_name,
+	cu.last_name
+FROM
+	customer cu
+	JOIN invoice inv ON inv.customer_id = cu.customer_id
+	JOIN invoice_line il ON il.invoice_id = inv.invoice_id
+	JOIN track tr ON tr.track_id = il.track_id
+	JOIN genre gr ON gr.genre_id = tr.genre_id
+GROUP BY cu.customer_id
+HAVING COUNT(DISTINCT gr.genre_id) = 1
+\end{minted}
+
+\paragraph{AR}
+\begin{itemize}
+\item[] $\rho(\text{name} \to \text{track\_name}, \text{ track})$
+\item[] $\rho(\text{name} \to \text{genre\_name}, \text{ genre})$
+\item[] $\rho(todaInfo, \text{customer} \bowtie \text{invoice} \bowtie \text{invoice\_line} \bowtie \text{track} \bowtie \text{genre})$
+\item[] $\rho(todaInfo_1,~todaInfo)$
+\item[] Además renombro todos los atributos de $todaInfo_1$ agregandoles un $1$ al final.
+
+\item[] $\rho(clientesMasDeUnGenero,~\pi_{\text{first\_name, last\_name}}(\sigma_{genre\_id_1 \neq genre\_id}(todaInfo \bowtie todaInfo_1)))$
+
+\item[] $\pi_{\text{first\_name, last\_name}}(customer) - clientesMasDeUnGenero$
+\end{itemize}
+
+\paragraph{CRT}
+\begin{itemize}
+\item[] $\{ t~/\exists~cu,inv,il,tr,gr (\text{ pertenecenALasTablasQueTieneQuePertenecer}(cu,inv,il,tr,gr)\\ \land \text{ formanUnLindoJoin}(cu,inv,il,tr,gr) \land \\ \land \text{ noExisteOtroTrackDeEseGeneroEnNingunOtroInvoiceDeEseCliente}(cu,inv,il,tr,gr)\}$
+
+\item[] pertenecenALasTablasQueTieneQuePertenecer$(cu,inv,il,tr,gr) = cu\in\text{customer} \land inv\in\text{invoice} \land il\in\text{invoice\_line}\land tr\in\text{track} \land gr\in\text{genre}  \\ \land t.\text{customer\_id} = cu.$
+
+\item[] formanUnLindoJoin$(cu,inv,il,tr,gr) = cu.\text{customer\_id} = inv.\text{customer\_id} \land inv.\text{invoice\_id} = il.\text{invoice\_id} \\ \land
+il.\text{track\_id}  = tr.\text{track\_id} \land tr.\text{genre\_id} = gr.\text{genre\_id}$
+
+\item[] noExisteOtroTrackDeEseGeneroEnNingunOtroInvoiceDeEseCliente$(cu,inv,il,tr,gr) = \\ \nexists cu_1,inv_1,il_1,tr_1,gr_1 ( \text{pertenecenALasTablasQueTieneQuePertenecer}(cu_1,inv_1,il_1,tr_1,gr_1) \\ \land \text{formanUnLindoJoin}(cu_1,inv_1,il_1,tr_1,gr_1) \land cu.\text{customer\_id} = cu_1.\text{cutomer\_id} \land gr_1.\text{genre\_id} = \text{genre\_id}$
+\end{itemize}
+\subsection{Ejercicio 2.5}
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT ac.nombreActor
+FROM
+	actor ac
+	JOIN participa_en pe ON pe.idActor = ac.actorId
+	JOIN serie s ON s.idSerie = pe.idSerie
+WHERE
+	ac.edad > 30
+	AND se.nombreSerie = 'Friends';
+\end{minted}
+
+\newpage
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT ca.nombreCanal
+FROM
+	canal ca
+	JOIN transmite tr ON tr.idCanal = ca.idCanal
+	JOIN serie s ON s.idSerie = tr.idSerie
+	JPON genero g ON g.idGenero = s.idGenero
+GROUP BY ca.idCanal
+HAVING COUNT(g.idGenero = 'comedia') = (
+	SELECT COUNT(*)
+	FROM
+		serie s
+		JOIN genero g ON g.idGenero = s.idGenero
+	GROUP BY g.nombreGenero
+	HAVING g.nombreGenero = 'comedia'
+	)
+
+\end{minted}
+
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT	ac.nombreActor
+FROM
+	actor ac
+	JOIN particia_en pe ON pe.idActor = ac.idActor
+	JOIN serie s ON s.idSerie = p.idSerie
+WHERE 
+	ac.edad > 30
+	AND s.nombreSerie = 'Friends'
+	AND ac.idActor IN 
+		(SELECT ac.idActor
+		FROM 
+			actor ac
+			JOIN participa_en pe ON pe.idActor = ac.idActor
+			JOIN serie s ON s.idSerie = pe.idSerie
+		WHERE s.añoInicio > 2000
+		)
+\end{minted}
+
+\newpage
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT ac.nombreActor
+FROM
+	actor ac
+	JOIN particia_en pe ON pe.idActor = ac.idActor
+	JOIN serie s ON s.idSerie = p.idSerie
+WHERE 
+	ac.edad > 30
+	AND s.nombreSerie = 'Friends'
+	AND ac.idActor NOT IN 
+		(SELECT ac.idActor
+		 FROM 
+			actor ac
+			JOIN participa_en pe ON pe.idActor = ac.idActor
+			JOIN serie s ON s.idSerie = pe.idSerie
+		WHERE s.añoInicio > 2000
+		)
+\end{minted}
+
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT idSerie
+FROM serie
+WHERE añoInicio = (
+	SELECT MAX(añoInicio)	
+	FROM serie
+	)
+\end{minted}
+
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT acDos.idActor
+FROM (
+	SELECT
+		ac.idActor as idActor,
+		COUNT(DISTINCT pe.idSerie) as cantSeries
+	FROM
+		actor ac
+		JOIN participa_en pe ON pe.idActor = ac.idActor
+	GROUP BY ac.actorId) acDos
+WHERE acDos.cantSeries >= 2
+\end{minted}
+
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT seDos.nombre
+FROM (
+	SELECT
+		s.nombre as nombre,
+		COUNT(DISTINCT pe.idSerie) as cantSeries
+	FROM
+		serie s
+	GROUP BY s.nombre) acDos
+WHERE sDos.cantSeries >= 2
+\end{minted}
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT tr.idCanal
+FROM trasmite tr
+WHERE tr.idSerie IN (
+	SELECT s.idSerie 
+	FROM serie s
+	WHERE s.nombreSerie IN (
+		SELECT seDos.nombre
+		FROM (
+			SELECT
+				s.nombreSerie as nombre,
+				COUNT(DISTINCT pe.idSerie) as cantSeries
+			FROM
+				serie s
+				GROUP BY s.nombre) acDos
+			WHERE sDos.cantSeries >= 2
+	)
+)
+\end{minted}
+
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT s.idSerie
+FROM
+	serie s
+	JOIN participa_en pe ON pe.idSerie = s.idSerie
+	JOIN actor ac ON ac.idActor = pe.idActor
+GROUP BY s.idSerie
+HAVING AVG(ac.edad) > (
+	SELECT MAX(sq.promedio)
+	FROM (
+		SELECT AVG(ac.edad) as promedio
+		FROM
+			serie s
+			JOIN participa_en pe ON pe.idSerie = s.idSerie
+			JOIN actor ac ON ac.idActor = pe.idActor
+		GROUP BY s.idSerie
+		) sq
+	)
+\end{minted}
+
+\newpage
+\subsubsection{}
+\begin{minted}[tabsize=4]{postgresql}
+SELECT g.idGenero
+FROM
+	genero g
+	JOIN serie s ON s.idGenero = g.idGenero
+	JOIN participa_en pe ON pe.idSerie = s.idSerie
+WHERE pe.idActor IN (
+	SELECT ac.idActor
+	FROM actor ac
+	WHERE ac.edad = (
+		SELECT MIN(ac.edad)
+		FROM actor ac
+	)
+)
+\end{minted}
+
+\subsection{\red{Ejercicio 2.6 - Falta}}
+\subsection{\red{Ejercicio 2.7 - Falta}}
+\subsection{\red{Ejercicio 2.8 - Falta}}
+\subsection{\red{Ejercicio 2.9 - Falta}}
+
+
+\end{document}

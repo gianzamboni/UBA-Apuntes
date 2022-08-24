@@ -1,0 +1,165 @@
+%Una pequeña empresa precisa guardar información acerca de clientes, artículos y
+%pedidos. Hasta el momento se registran los siguientes datos en documentos varios:
+%\begin{enumerate}
+%	\item Para cada cliente: Número de cliente (único), Direcciones de envío (varias por cliente), Saldo, Límite de crédito (depende del cliente, pero en ningún caso debe superar los \$3.000.000 ), Descuento.
+%	\item Para cada artículo: Número de artículo (único), Fábricas que lo distribuyen, Exis-tencias de ese artículo en cada fábrica, Descripción del artículo.
+%	\item Para cada pedido: Una cabecera y el cuerpo del pedido. La cabecera está formada por el número de cliente, dirección de envío y fecha del pedido. El cuerpo del pedido está compuesto de varias líneas y en cada línea se especifican el número del artículo pedido y la cantidad.
+%\end{enumerate}
+%Además, se ha determinado que se debe almacenar la información de las fábricas. Sin embargo, dado el uso de distribuidores, se usará: Número de la fábrica (único) y Teléfono de contacto. Y se desean ver cuántos artículos (en total) provee la fábrica. También, por información estratégica, se podría incluir información de fábricas alternativas respecto de las que ya fabrican artículos para esta empresa.\\
+%\textbf{Nota}: Una dirección se entenderá como Nº, Calle, Comuna y Ciudad. Una fecha incluye hora.
+
+\begin{center}
+	\textbf{DER}
+	\vspace*{1cm}
+	
+	\scalebox{1}{
+		\begin{tikzpicture}[.style={DER}]	
+		%% Entidades y relaciones
+		\node [agregacion] (agregacionClienteDireccion) {
+			\begin{tikzpicture}
+			%% Entidades y relaciones
+			\node[entity]		(cliente)											{Cliente};
+			\node[relationship]	(enviaA)				[right=of cliente]			{envia a};
+			\node[entity]		(direccion)				[right=of enviaA]			{Direccion};
+			
+			%%Atributos Cliente
+			\node[attributePK]	(clienteNroCliente)		[above=of cliente] 			{\PK{nroCliente}};
+			\node[attribute] 	(clienteSaldo)			[above left=of cliente]		{saldo};
+			\node[attribute] 	(clienteLimiteCredito)	[left=of cliente]			{limiteCredito};
+			\node[attribute] 	(clienteDescuento)		[below left=of cliente]		{descuento};
+			
+			%% Atributos direccion
+			\node[attributePK]	(direccionIdDireccion)	[above=of direccion] 		{\PK{idDireccion}};
+			\node[attribute] 	(direccionN)			[above right=of direccion]	{numero};
+			\node[attribute] 	(direccionCalle)		[right=of direccion]			{calle};
+			\node[attribute] 	(direccionComuna)		[below right=of direccion]	{comuna};
+			\node[attribute] 	(direccionCiudad)		[below=of direccion]		{ciudad};
+			
+			\path
+			%%Atributos cliente
+			(cliente)	edge	(clienteNroCliente)
+			(cliente) 	edge	(clienteSaldo)
+			(cliente) 	edge	(clienteLimiteCredito)
+			(cliente) 	edge	(clienteDescuento)
+			
+			%% Atributos direccion
+			(direccion)	edge	(direccionIdDireccion)
+			(direccion)	edge	(direccionN)	
+			(direccion)	edge	(direccionCalle)	
+			(direccion)	edge	(direccionComuna)	
+			(direccion)	edge	(direccionCiudad)	
+			
+			%%Relacion envia A
+			(enviaA) 	edge	node[yshift=0.2cm, pos=0.8] {N} 	(cliente)
+			(enviaA) 	edge	node[yshift=0.2cm, near end] {M} 	(direccion)
+			
+			;
+			\end{tikzpicture}
+		};
+		
+		\node[relationship]	(esCabeceraDe)	[below=of agregacionClienteDireccion] 	{cabecera de};
+		\node[entity]		(pedido)		[below=of esCabeceraDe]					{Pedido};
+		\node[] 			(auxI)			[right=of pedido] 						{};  %%Auxiliar
+		\node[relationship] (pide)			[right=of auxI]							{pide};
+		\node[] 			(auxII)			[right=of pide] 						{};  %%Auxiliar
+		\node[]				(auxIII)		[right=of auxII]						{};	 %%Auxiliar
+		\node[entity]		(articulo)		[right=of auxIII]						{Articulo};
+		\node[relationship]	(distribuye)	[above=of articulo]						{distribuye};
+		\node[entity]		(fabrica)		[above=of distribuye]					{Fabrica};
+		
+		
+		%%Atributos Articulo
+		\node[attributePK]	(articuloNroArticulo)	[right=of articulo] 					{\PK{nroArticulo}};
+		\node[attribute]	(articuloDescripcion)	[above right=of articulo] 				{descripcion};
+		
+		%%Atributos Fabrica
+		\node[attributePK]	(fabricaNroFabrica)		[above=of fabrica] 						{\PK{nroFabrica}};
+		\node[attribute]	(fabricaTelefono)		[above right=of fabrica] 				{telefono};
+		
+		%%Atributos de pedido
+		\node[attributePK]	(pedidoIdPedido)		[left=of pedido] 						{\PK{idPedido}};
+		\node[attribute]	(pedidoFecha)			[above left=of pedido] 					{fecha};
+		\node[attribute] 	(pedidoFechaDia)	[above left=of pedidoFecha, yshift=-1cm] {dia};
+		\node[attribute] 	(pedidoFechaHora)	[below left=of pedidoFecha, yshift=1cm] {hora};
+		
+		%% Atributos distribuye
+		\node[attribute]	(distribuyeCantDisponible)	[left=of distribuye] 	{cantDisponible};
+		
+		%%Atributos pide
+		\node[attribute]	(pideCantidad)				[below=of pide] 			{cantidad};
+		
+		%% Atributos PedidoFecha
+		\path
+		%% Atributos articulo
+		(articulo)		edge	(articuloNroArticulo)
+		(articulo)		edge	(articuloDescripcion)
+		
+		%% Atributos pedido
+		(pedido)		edge 	(pedidoIdPedido)
+		(pedido)		edge	(pedidoFecha)
+		(pedidoFecha)	edge	(pedidoFechaDia)
+		(pedidoFecha)	edge	(pedidoFechaHora)
+		
+		%% Atributos fabrica
+		(fabrica)		edge	(fabricaNroFabrica)
+		(fabrica)		edge	(fabricaTelefono)
+		
+		%% Atributos pide
+		(pide) 			edge 	(pideCantidad)
+		
+		%%Atributos distribuye
+		(distribuye)	edge	(distribuyeCantDisponible)
+		
+		%% Relacion distribuye
+		(distribuye) 		edge	node[right, near end] {M}	(articulo)
+		
+		%% Relacion es cabecera de
+		(esCabeceraDe)		edge	node[right, near end] {M}	(pedido)
+		
+		%% Relacion pide
+		(pide)				edge	node[above, near end] {N} 	(pedido)
+		(pide)				edge 	node[above, near end] {M} 	(articulo)
+		;
+		
+		\path[rightOptional]
+		(esCabeceraDe) 	edge 	node[right, near end] {1} 	(agregacionClienteDireccion)
+		(distribuye) 	edge	node[right, near end] {N}	(fabrica)
+		;
+	\end{tikzpicture}
+	
+}
+\end{center}
+
+\textbf{Restricciones adicionales:}
+\begin{itemize}
+\item \textit{Cliente.limiteCredito} debe ser menor a 3.000.000
+\end{itemize}
+
+\begin{multicols}{2}
+\textbf{MER}
+
+Cliente(\PK{nroCliente}, saldo, limiteCredito, descuento)
+
+Direccion(\PK{idDireccion}, numero, calle, comuna, ciudad)
+
+enviaA(\FPK{nroCliente}, \FPK{idDireccion})
+
+Pedido(\PK{idPedido}, dia, hora, \FK{nroCliente, idDireccion})
+
+Articulo(\PK{nroArticulo}, descripcion)
+
+pide(\FPK{idPedido}, \FPK{nroArticulo}, cantidad)
+
+Fabrica(\PK{nroFabrica}, telefono)
+
+distribuye(\FPK{nroFabrica}, \FPK{nroArticulo}, cantDisponible)
+
+\columnbreak
+\red{\textbf{Notas}}
+\begin{itemize}
+	\item Al realizar una agregación de una relación M-N, se la toma como a una entidad más. Puede participar en cualquier tipo de relación y cuantas relaciones sea necesario.
+	\item Se pide saber cuantos artículos en total provee la fábrica. No es necesario almacenar este dato, se puede hacer una búsqueda en la tabla \textit{distribuye} de todos los objetos que tienen el \textit{nroFabrica} adecuado y sumar todos los valores.
+	\item Fábrica tiene participación parcial en la relación distribuye. Esto quiere decir que habrá algunas qué no distribuirán ningún producto a la empresa (estas son las fábricas alternativas).
+\end{itemize}
+
+\end{multicols}

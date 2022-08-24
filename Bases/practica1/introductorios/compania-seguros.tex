@@ -1,0 +1,86 @@
+%\paragraph{Enunciado:}Una compañía de seguros de automóviles tiene clientes que pueden poseer uno o más vehículos cada uno. Cada vehículo tiene asociado cero a cualquier
+%número de accidentes registrados. Cada póliza de seguro cubre uno o más vehículos, y tiene uno o más pagos de las primas asociadas con ella. Cada pago es por un período de tiempo determinado , y tiene una fecha de vencimiento asociada, y la fecha en que se recibió el pago. Discuta diferentes alternativas de vinculación entre póliza y vehículo.
+
+\begin{center}
+\scalebox{1}{
+	\begin{tikzpicture}[DER]
+	
+	%% Entidades; y relaciones
+	\node[entity]		(cliente)								{Cliente};
+	\node[relationship]	(posee)			[right=of cliente]			{posee};
+	\node[entity]		(vehiculo)		[right=of posee]		{Vehiculo};
+	\node[relationship]	(cubre)			[above=of vehiculo]	{cubre};
+	\node[entity] 		(poliza) 	[above=of cubre]		{Poliza};
+	\node[weak relationship]	(paga)		[left=of poliza]		{paga};
+	\node[weak entity]		(pago)		[left=of paga]	{Pago};
+	
+	%%Atributos Cliente
+	\node[attributePK]	(clienteIdCliente)	[left=of cliente] {\PK{idCliente}};
+	
+	%% Atributos Pago
+	\node[attributePK]  (pagoNroPago)		[above=of pago]	{\PK{nroPago}};
+	\node[attribute]	(pagoFechaRecepcion)		[above left=of pago] {fechaRecepcion};
+	\node[attribute]	(pagoPeriodo)		[left=of pago] {periodo};
+	\node[attribute]	(pagoPeriodoInicio)		[left=of pagoPeriodo] {fechaInicio};
+	\node[attribute]	(pagoPeriodoFin)		[below left=of pagoPeriodo, xshift=-0.5cm] {fechaFin};
+	\node[attribute]	(pagoVencimiento)		[below left=of pago] {vencimiento};
+	
+	%% Atributos Poliza
+	\node[attributePK]	(polizaIdPoliza)	[right=of poliza] {\PK{idPoliza}};
+
+	%% Atributos Vehiculo
+	\node[attributePK]	(vehiculoIdVehiculo)	[right=of vehiculo] {\PK{idVehiculo}};	
+
+	
+	\path
+
+		%%Ejes cliente
+		(cliente)		edge (clienteIdCliente)
+
+		%% Ejes Pago
+		(pago) 			edge (pagoNroPago)
+		(pago) 			edge (pagoFechaRecepcion)
+		(pago) 			edge (pagoPeriodo)
+		(pago) 			edge (pagoVencimiento)
+		(pagoPeriodo) 	edge (pagoPeriodoInicio)
+		(pagoPeriodo) 	edge (pagoPeriodoFin)
+
+		%% Ejes poliza		
+		(poliza)		edge (polizaIdPoliza)
+		
+		%% Ejes Vehiculo
+		(vehiculo)		edge (vehiculoIdVehiculo)
+		
+		%% Ejes cubre
+		(cubre) edge node[left, near end]{N} (poliza)
+		(cubre) edge node[left, near end]{M} (vehiculo)
+
+		%% Ejes paga
+		(paga) edge node[above, near end]{N} (pago)
+		(paga) edge node[above, near end]{1} (poliza)
+		
+		%% Ejes posee
+		(posee) edge node[above, near end]{1} (cliente)
+		(posee) edge node[above, near end]{N} (vehiculo)
+		;
+	\end{tikzpicture}
+	
+}
+\vspace*{1cm}
+
+\begin{minipage}{0.5\textwidth}
+\textbf{MER}
+	
+	Cliente		(\PK{idCliente})
+	
+	Vehiculo	(\PK{idVehiculo}, \FK{idCliente}, \FK{idPoliza})
+	
+	Accidente	(\PK{idAccidente}, \FK{idVehiculo})
+	
+	Poliza		(\PK{idPoliza})
+	
+	Pago		(\FPK{idPoliza}, \PK{nroPago}, fechaRecepcion, fechaInicio, fechaFin, vencimiento)
+	
+\end{minipage}
+
+\end{center}

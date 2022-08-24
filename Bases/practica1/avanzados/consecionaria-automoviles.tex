@@ -1,0 +1,186 @@
+%Un concesionario de automóviles desea informatizar su gestión de ventas de vehículos. En particular se desea tener almacenada la información referente a los clientes que compran en el concesionario, los vehículos vendidos, así como los vendedores que realizan las distintas ventas. Para ello, se tendrá en cuenta que:
+%\begin{enumerate}
+%	\item El concesionario dispone de un catálogo de vehículos definidos por su marca, modelo, cilindrada y precio.
+%	\item Cada uno de los modelos dispondrá de opciones adicionales (aire acondicionado, pintura metalizada, etc). Las opciones vienen definidas por un nombre y una descripcion. Tener en cuenta que una opcion puede ser común para varios modelos variando sólo el precio en cada caso.
+%	\item En cuanto a los clientes, se interesa guardar el nombre, apellido, DNI, dirección y teléfono, lo mismo que para los vendedores
+%	\item Los clientes pueden ceder su vehículo usado en el momento de comprar un vehículo nuevo. El vehículo usado vendrá definido por su marca, modelo, matrícula y precio de tasación. Es importante conocer la fecha en que el cliente realiza esta cesión.
+%	\item Se desea saber qué vendedor ha vendido qué modelo a qué cliente. También la fecha de la venta y la matrícula del nuevo vehículo. Es importante también saber las opciones que el cliente ha elegido para el modelo de compra
+%\end{enumerate}
+
+	\begin{center}
+	\scalebox{0.75}{
+		\begin{tikzpicture}[.style={DER}]	
+		
+		%% Persona
+		\node[entity]				(persona)													{Persona};
+		\node[attributePK]			(personaDni)			[above=of persona]					{\PK{dni}};
+		\node[attribute]			(personaApellido)		[above left=of persona]				{apellido};
+		\node[attribute]			(personaNombre)			[left=of persona]					{nombre};
+		\node[attribute]			(personaDireccion)		[below left=of persona]				{direccion};
+		\node[attribute]			(personaTelefono)		[below=of persona]					{telefono};
+		
+		%% InheritaEntidadesnce Persona
+		\node[inheritance]			(inheritancePersona)	[right=of persona]					{D};
+		\node[entity]				(cliente)				[below right=of inheritancePersona]	{Cliente};
+		
+		%% Vendedor
+		\node[entity]				(vendedor)				[above right=of inheritancePersona]	{Vendedor};			
+		
+		%% Realizó y Partició en
+		\node[weak relationship]	(realizo)				[right=of vendedor]					{realizó};
+		\node[relationship]			(participoEn)			[right=of cliente]					{participó en};
+		
+		%% Venta
+		\node[weak entity]			(venta)					[right=of participoEn]				{Venta};
+		\node[attributePK]			(ventaIdVenta)			[above right=of venta]				{\PK{idVenta}};
+		\node[attribute]			(ventaFecha)			[right=of venta]					{fecha};
+		
+		%% pertenece A
+		\node[relationship]			(tiene)					[below=of cliente]					{tiene};
+		\node[attribute]			(tieneHasta)			[left=of tiene] 					{hasta};
+		\node[attribute]			(tieneDesde)			[above =of tieneHasta] 				{desde};
+		
+		%% Vehiculos e inheritance
+		\node[entity]				(usado)					[below=of tiene]					{Usado};
+		\node[inheritance]			(inheritanceVehiculo)	[below left=of usado]				{D};
+		\node[entity]				(nuevo)					[below right=of inheritanceVehiculo]{Nuevo};
+		
+		\node[entity]				(vehiculo)				[left=of inheritanceVehiculo]		{Vehiculo};
+		\node[attributePK]			(vehiculoMatricula)		[above left=of vehiculo]			{\PK{matricula}};
+		
+		\node[relationship]			(cedidoEn)				[right=of usado]					{cedido en};
+		\node[relationship]			(vendidoEn)				[right=of nuevo]					{vendido en};
+		
+		\node[attribute]			(usadoTasacion)			[left=of usado]						{tasación};	
+		\node[attribute]			(nuevoPrecio)			[above=of nuevo]					{precio};
+		
+		%%Modelo
+		\node[relationship] 		(esModelo)				[below=of vehiculo]					{es};
+		\node[entity] 				(modelo)				[below=of esModelo] 				{Modelo};
+		
+		\node[attributePK] 			(modeloNombre) 			[above left=of modelo]				{\PK{nombre}};
+		\node[attribute]			(modeloCilindrada) 		[left=of modelo] 					{cilindrada};
+		\node[attributePK] 			(modeloMarca)			[below left=of modelo] 				{\PK{marca}};
+		
+		%%Opciones
+		\node[relationship]			(puedeTener)			[below=of modelo]					{puede tener};
+		\node[attribute]			(puedeTenerPrecio)		[below=of puedeTener]				{precio};
+		\node[entity]				(opcion)				[right=of puedeTener]				{Opcion};
+		\node[attributePK]			(opcionNombre)			[below=of opcion]					{\PK{nombreOp}};
+		\node[attribute]			(opcionDescripcion)		[below right=of opcion]				{descripción};
+		
+		\node[relationship]			(conOpciones)			[below=of nuevo]					{con};
+		
+		%%Ejes
+		\path
+		%%Atributos
+		(persona)				edge	(personaDni)
+		(persona)				edge	(personaApellido)
+		(persona)				edge	(personaNombre)
+		(persona)				edge	(personaDireccion)
+		(persona)				edge	(personaTelefono)
+		
+		(inheritancePersona)	edge 	(persona)
+		(inheritancePersona)	edge 	(vendedor)
+		(inheritancePersona)	edge 	(cliente)
+		
+		(venta)					edge	(ventaIdVenta)
+		(venta)					edge	(ventaFecha)
+		
+		(vehiculo)				edge 	(vehiculoMatricula)
+		
+		
+		(inheritanceVehiculo)	edge	(vehiculo)
+		(inheritanceVehiculo)	edge	(nuevo)
+		(inheritanceVehiculo)	edge	(usado)
+		
+		(nuevo)					edge	(nuevoPrecio)
+		(usado)					edge	(usadoTasacion)			
+		
+		
+		(tiene)					edge	(tieneDesde)
+		(tiene)					edge	(tieneHasta)
+		
+		(modelo)				edge	(modeloNombre)
+		(modelo)				edge	(modeloCilindrada)
+		(modelo)				edge	(modeloMarca)
+		
+		(opcion)				edge	(opcionNombre)
+		(opcion)				edge	(opcionDescripcion)
+		
+		(puedeTener)			edge	(puedeTenerPrecio)
+		
+		%%Relaciones
+		(participoEn)		edge						node[above, near end]		{N}	(cliente)
+		(participoEn)		edge[out=east, in=160]						node[above, near end]		{M}	(venta)
+		
+		(realizo.east)		edge[in=north, out=east]	node[right, pos=0.95]		{N}	(venta.north)
+		
+		(tiene)				edge						node[right, near end]		{M}	(usado)	
+		
+		(cedidoEn)			edge						node[above, near end]		{1}	(usado)
+		
+		(vendidoEn)			edge						node[above, near end]		{1}	(nuevo)
+		
+		(vendidoEn)			edge[in=220, out=east]		node[below right, pos=0.95]	{1}	(venta)
+		
+		(esModelo)			edge 						node[right, near end]		{N}	(vehiculo)
+		(esModelo)			edge 						node[right, near end]		{1}	(modelo)
+		
+		(puedeTener)		edge						node[right, near end]		{N}	(modelo)
+		(puedeTener)		edge						node[above, near end]		{M}	(opcion)
+		;
+		
+		\path[rightOptional]
+		(realizo)			edge						node[above, near end]		{1}	(vendedor)
+		
+		(tiene)				edge						node[right, near end]		{N}	(cliente)
+		
+		(cedidoEn.east)		edge[out=east, in=west]		node[below, pos=0.95]	{1}	(venta)
+		
+		(conOpciones)		edge						node[left, near end]		{M}	(nuevo)
+		(conOpciones)		edge[in=north, out=south]	node[above left, near end]		{N}	(opcion)
+		;
+		\end{tikzpicture}
+	}
+\end{center}
+
+\begin{multicols}{2}
+	\textbf{MER}
+	
+	\noindent Persona(\PK{dni}, nombre, apellido, direccion, telefono, tipo)
+	
+	\noindent Venta(\PK{idVenta}, fecha, \FPK{dni}, \FK{matricula})
+	
+	\noindent  Vehiculo(\PK{matricula}, tipo, \FPK{nombre, marca})
+	
+	\noindent Usado(\FPK{matricula}, tasacion, \FK{idVenta})
+	
+	\noindent Nuevo(\FPK{matricula}, precio)
+	
+	\noindent Modelo(\PK{nombre, marca}, cilindrada)
+	
+	\noindent Opcion(\PK{nombreOp}, descripcion)
+	
+	\noindent participoEn(\FPK{dni}, \FPK{idVenta})
+	
+	\noindent tiene(\FPK{dni}, \FPK{matricula}, desde, hasta)
+	
+	\noindent puedeTener(\FPK{nombre, marca}, \FPK{nombreOp}, precio)
+	
+	\noindent con(\FPK{matricula}, \FPK{nombreOp})
+	
+	\columnbreak
+	\textbf{Restricciones}
+	\begin{itemize}
+		\item \textit{cedido.matricula} debe ser un auto usado y debe pertenecer al cliente que participó en la venta \textit{cedido.idVenta}. 
+		\item \textit{tiene.hasta} debe ser menor o igual a la fecha en la que ocurrió la venta en la que el cliente cedió el auto.
+		\item \textit{vendidoEn.matricula} debe ser la matricula de un auto nuevo.
+		\item \textit{nuevo.precio} debe tener en cuenta el precio de cada opcion agregada al auto.
+	\end{itemize}	
+	
+	\textbf{\red{Nota}}
+	\begin{itemize}
+		\item Acá no puedo usar una ternaria Usuario - Usado - Venta porque hay ventas en las que el usuario no cede ningún auto. Si pusiesemos una ternaria, entonces tendriamos una tabla en la que un atributo quedaría nulo la mayoría de las veces.
+	\end{itemize}
+\end{multicols}

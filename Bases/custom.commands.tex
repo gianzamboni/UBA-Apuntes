@@ -1,0 +1,31 @@
+\newcommand{\black}[1]{{\color{black}#1}}%\renewcommand{\appendixtocname}{Apéndices}
+
+\newcommand{\PK}[1]{\underline{#1}}
+\newcommand{\FK}[1]{\dashuline{#1}}
+\newcommand{\FPK}[1]{\PK{\FK{#1}}}
+
+\newcommand{\red}[1]{{\color{red}#1}}
+
+\definecolor{TableHeader}{rgb}{0.813, 0.856, 0.931}
+
+
+\newcommand{\warningsign}{\tikz[baseline=0.1cm] \node[shape=regular polygon, regular polygon sides=3, inner sep=1pt, draw, thick] {\textbf{!}};}
+
+
+\tikzstyle{atentionBox} = [
+draw=gray, very thick,
+inner xsep=0.5cm, inner ysep=0.5cm, draw=red!90, color=red!80!black!150, fill=red!5!white!80
+]
+
+\NewEnviron{atencion}[1]{%
+	\begin{center}
+		\begin{tikzpicture}
+		\node [atentionBox](box){%
+		\scalebox{#1}{\warningsign}\hspace*{0.5cm} 
+		\begin{minipage}{0.8\textwidth}
+		\Large \BODY		
+		\end{minipage}
+		};
+		\end{tikzpicture}
+	\end{center}
+}

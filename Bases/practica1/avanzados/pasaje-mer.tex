@@ -1,0 +1,53 @@
+%%Considere los siguientes diagramas de entidad-relacion y para cada uno de ellos ima-gine un problema donde tenga sentido esa forma de modelado. Explique su elección. Realice el modelo relacional de cada uno y compárelos. Justifique las respuestas.
+
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[scale=0.55]{img/Diagrama1}
+%\end{figure}
+%
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[scale=0.60]{img/Diagrama2}
+%\end{figure}
+%
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[scale=0.60]{img/Diagrama3}
+%\end{figure}
+
+
+\begin{multicols}{2}
+	
+	\noindent\textbf{MER 1}
+	
+	\noindent Persona(\PK{dni}, nombre, direccion, telefono, obraSocial, nroAfiliado, nombreSindicato, fechaIngreso, puesto)
+	
+	\noindent tieneHijos(\FPK{dni1}, \FPK{dni2})
+	
+	\vspace*{0.5cm}
+	\noindent\textbf{Restricción:} Una persona no puede ser su propio hijo ($dni1 \neq dni2$)
+	\vspace*{1cm}
+	
+	\noindent\textbf{MER2}
+	
+	\noindent Persona(\PK{dniPersona}, nombre, direccion, telefono, obraSocial, nroAfiliado, nombreSindicato, fechaIngreso, puesto)
+	
+	\noindent Hijos(\PK{dniHijo}, nombre, direccion)
+	
+	\noindent tiene(\FPK{dniPersona}, \FPK{dniHijo})
+	
+	\columnbreak
+	\noindent\textbf{MER3}
+	
+	\noindent Persona(\PK{dni}, nombre, direccion, tipo)
+	
+	\noindent Empleado(\FPK{dni}, nombreSindicato, nroAfiliado, obraSocial, telefono, fechaIngreso, puesto)
+	
+	\noindent Hijos(\FPK{dni})
+	
+	\noindent tiene(\FPK{dni1}, \FPK{dni2})
+	
+	\vspace*{0.5cm}
+	\noindent\textbf{Restriccion:} \textit{dn1} debe ser el dni de un empleado y \textit{dn2} el dni de un hijo. (dn1 debe tener una entrada en la tabla empleado y dn2 una en la tabla hijo)
+\end{multicols}
+

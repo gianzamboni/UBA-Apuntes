@@ -1,0 +1,149 @@
+%Una empresa que fabrica perfumes, precisa organizar su base de productos. Cada producto está codificado, tiene un nombre y un costo que surge de un cálculo donde intervienen los costos de las materias primas y otros productos que lo componen. Un producto está compuesto por otros productos y/o materias primas. Las materias primas poseen un costo base. \\
+%Un cliente, del que se desea guardar el CUIT, Razón social, Domicilio, Teléfono y tipo de IVA, realiza pedidos de productos. Los pedidos están numerados correlativamente, poseen una descripción, una fecha y tienen ítems con los productos. El cliente solicita una determinada cantidad de cada producto y en cada ítem del pedido se detalla además el precio unitario.\\
+%No se pueden realizar pedidos de materias primas.\\
+%Para cumplir con los pedidos de clientes, la empresa realiza órdenes de fabricación. Estas órdenes están codificadas por número de partida. También poseen una fecha de la orden y una de vencimiento de la partida. La fecha de vencimiento debe ser mayor a la fecha de la orden. En una orden de fabricación pueden fabricarse varios ítems de diversos pedidos. No se pueden fabricar materias primas. Sólo se realizan fabricaciones de los ítems pedidos.
+%
+%Realice el DER, con sus restricciones en lenguaje natural, que modele el problema planteado.
+%El Modelo deber\'{a} permitir adem\'{a}s resolver las siguientes consultas:
+%\begin{itemize}
+%	
+%	\item El costo final de cualquier producto
+%	\item Para cada cliente, la lista de los productos pedidos en una fecha con la fecha de vencimiento de la partida
+%	\item El costo de fabricar una orden para un cliente
+%	\item La composición de un producto
+%	\item Las ordenes de fabricación que cumplen con fabricar un pedido dado
+%	
+%\end{itemize}
+%Realizar el Modelo Relacional. Se debe consignar todas las relaciones que surjan del DER, todos los atributos, todas las claves primarias y todas las claves foráneas
+\vspace*{-2.5cm}
+\begin{center}
+	\scalebox{0.8}{
+		\begin{tikzpicture}[DER]	
+		\node[entity] (producto)										{Producto};
+		\node[inheritance] (inhProducto) [below=of producto] 			{D};
+		\node[entity] (materiaPrima)	[below left=of inhProducto] 	{Materia Prima};
+		\node[entity] (compuesto)		[below right=of inhProducto, yshift=-2cm] 	{Compuesto};
+		\node[relationship] (compuestoPor) [right=of compuesto, xshift=4cm]			{compuesto por};
+		\node[relationship]	(pedidoPor)		[below=of compuesto]		{pedido por};
+		\node[weak entity]		(pedido)		[below=of pedidoPor, yshift=-1cm]	{Pedido};
+		\node[weak relationship] (realizadoPor) [right=of pedido, xshift=4cm]		{realizado por};
+		\node[entity] (cliente)		[right=of realizadoPor]				{Cliente};
+		
+		\draw ($(compuesto.north west) + (-3cm, 0.5cm)$) rectangle ($(pedido.south east) + (3.75cm, -2.25cm)$);
+		
+		\node[relationship] (resuelve)	[left=of pedidoPor, xshift=-4cm]			{resuelve};
+		\node[entity]		(ordenFabricacion) [left=of resuelve]		{Orden de Fabricacion};
+		
+		%% Atributos cliente
+		\node[attributePK]		(clienteDni)		[above=of cliente] {\PK{dni}};
+		\node[attribute]		(clienteRazonSocial)[above right=of cliente] {razonSocial};
+		\node[attribute]		(clienteDomicilio)	[right =of cliente] {domicilio};
+		\node[attribute]		(clienteTelefono)	[below right=of cliente] {telefono};
+		\node[attribute]		(clienteTipoIVA)	[below=of cliente] {tipoIVA};
+
+		%% Atributo ordenFabricacion
+		\node[attributePK]		(ordenNroPartida)	[above=of ordenFabricacion] {nroPartida};
+		\node[attribute]		(ordenFecha)		[left=of ordenFabricacion] {fecha};
+		\node[attribute]		(ordenVencimiento)	[below=of ordenFabricacion] {vencimiento};
+		
+		%% Atributos pedido
+		\node[attributePK]		(pedidoNroPedido)	[below left=of pedido]	{\PK{nroPedido}};
+		\node[attribute]		(pedidoDescripcion)	[below =of pedido]	{descripcion};
+		\node[attribute]		(pedidoFecha)		[below right=of pedido]	{fecha};
+
+		%% Atributos producto
+		\node[attributePK] (productoCodigo) [above left=of producto] {\PK{código}};
+		\node[attribute]   (productoCosto)  [left=of producto] {costo};
+		\node[attribute]   (productoNombre) [below left=of producto] {nombre};
+		
+		%% Atributos pedidoPor
+		\node[attribute]	(pedidoPorCantidad) [right=of pedidoPor] {cantidad};
+		\node[attribute]	(pedidoPorPrecioUnitario) [below right=of pedidoPor] {precioUnitario};
+		
+		\path
+		
+		%% Atributos cliente
+		(cliente) edge (clienteDni)		
+		(cliente) edge (clienteRazonSocial)
+		(cliente) edge (clienteDomicilio)	
+		(cliente) edge (clienteTelefono)	
+		(cliente) edge (clienteTipoIVA)	
+		
+		%% Atributos orden de fabricación
+		(ordenFabricacion) edge (ordenNroPartida)
+		(ordenFabricacion) edge (ordenFecha)
+		(ordenFabricacion) edge (ordenVencimiento)
+
+		%% Atributos pedido
+		(pedido) edge (pedidoNroPedido)
+		(pedido) edge (pedidoDescripcion)
+		(pedido) edge (pedidoFecha)
+		
+		%% Atributos producto
+		(producto) edge (productoCodigo)
+		(producto) edge (productoCosto)
+		(producto) edge (productoNombre)
+				
+		%% Inheritance producto
+		(inhProducto) edge node[right, pos=0.5]{tipo} 	(producto)
+		(inhProducto) edge 								(materiaPrima)
+		(inhProducto) edge 								(compuesto)
+		
+		%% Relación compuesto por
+		(compuestoPor) edge node[above, near end]{N}	(compuesto)
+		(compuestoPor) edge[out=east, in=north] node[left, pos=0.95]{M}		(producto)
+		
+		%% Relacion pedido por
+		(pedidoPor) edge node[right, near end]{N}	(pedido)
+		(pedidoPor) edge (pedidoPorPrecioUnitario)
+		(pedidoPor) edge (pedidoPorCantidad)
+		
+		%% Relacion realizado por
+		(realizadoPor) edge node[above, near end]{N} (pedido)
+		
+		%% Relacion resuelve
+		(resuelve) edge node[above, near end]{N} (ordenFabricacion)
+		;
+		
+		
+		\path[rightOptional]
+			%% Relacion pedido por
+			(pedidoPor) edge node[right, near end]{N}	(compuesto)
+			
+			%% Relacion realizado por
+			(realizadoPor) edge node[above, near end]{1} (cliente)
+			
+			%% Relacion resuelve
+			(resuelve) edge node[above, near end]{M} ($(pedidoPor.west) + (-2.51cm, 0)$)
+		;
+		\end{tikzpicture}	
+	}
+\end{center}
+
+\newpage
+\begin{multicols}{2}
+	\paragraph{MER}
+	\begin{itemize}
+		\item[] Producto(\PK{codigo}, costo, nombre, tipo)
+		\item[] Compuesto(\FPK{codigo})
+		\item[] Cliente(\PK{dni}, razonSocial, domicilio, telefono, tipoIVA)
+		\item[] Pedido(\FPK{dni}, \PK{nroPedido}, descripcion, fecha)
+		\item[] OrdenDeFabricacion(\PK{nroPartida}, fecha, vencimiento)
+		\item[] compuestoPor(\FPK{codigoCompuesto}, \FPK{codigoProducto})
+		\item[] pedidoPor(\FPK{codigo}, \FPK{dni, nroPedido}, cantidad, precioUnitario)
+		\item[] resuelve(\FPK{nroPartida}, \FPK{codigo, dni, nroPedido})
+	\end{itemize}
+	\columnbreak
+	\paragraph{Restricciones adicionales}
+	\begin{itemize}
+		\item Un compuesto no puede estar compuesto por si mismo.
+		\item La fecha de una partida es menor a su fecha de vencimiento.
+	\end{itemize}
+	\paragraph{Consultas}
+	\begin{itemize}
+		\item El costo final de un producto es el atributo \textit{costo} de \textit{Producto}. Solamente hay que hacer un select.
+		\item Join con \textit{cliente}, \textit{pedido}, \textit{pedidoPor}, \textit{resuelve} y \textit{ordenDeFabricacion}. Filtarmos por el cliente y la fecha deseada.
+		\item Dado un pedido, hacemos join con \textit{Pedido}, \textit{pedidoPor}, \textit{Compuesto}, \textit{Producto}. Acá tenemos todos los datos para sumar los costos de fabricar las cantidades necesarias de cada producto ($Producto.costo\times pedidoPor.cantidad$).
+		\item Join de \textit{pedidoPor} con \textit{resuelve} y seleccionamos todas las entradas que corresponden al pedido deseado.
+	\end{itemize}
+\end{multicols}

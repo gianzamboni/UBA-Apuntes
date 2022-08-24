@@ -1,0 +1,162 @@
+%La Policía de la Ciudad de Buenos Aires desea implementar un sistema de sensores para patentes con el objetivo de detectar vehículos robados o con orden de captura. Los sensores se instalarán en diferentes puntos de la ciudad.\\
+%De cada sensor se precisa saber el identificador, la calle y altura donde está instalado, el barrio y el código postal.\\
+%Las calles y barrios deben estar tabulados para luego poder listar la ruta que ha seguido el vehículo detectado. \\
+%Los sensores están conectados en forma inalámbrica a un destacamento policial. Los destacamentos poseen un nombre, dirección, teléfono y la comuna de la ciudad a la cual pertenecen. Se debe contar con el listado de vehículos que se deseen
+%detectar, ya sea vehículos robados o con orden de detención. De todos ellos se guarda la patente, marca, modelo, color, y datos del dueño (DNI, nombre y apellido, domicilio y un teléfono de contacto). Para los vehículos robados
+%además se precisa saber la fecha de la denuncia por robo. \\
+%Cuando un vehículo que cumple con estas condiciones pasa por el sensor, se dispara una alarma en el destacamento asociado al sensor con la fecha y hora de la detección.\\
+%Se desea saber:
+%\begin{itemize}
+%	
+%	\item Todas las alarmas disparadas en un rango de fechas
+%	\item El ranking de los 10 destacamentos policiales con más alarmas detectadas
+%	\item Los datos del vehículo que causa una alarma en particular
+%	\item La ruta que siguió un vehículo desde que un sensor lo detectó (en caso que haya pasado en su trayecto por otros sensores
+%	
+%\end{itemize}
+%Realice el \textbf{DER}, con sus restricciones en lenguaje natural, que modele el problema planteado. Realizar el \textbf{Modelo Relacional}. Se debe consignar todas las relaciones que surjan del DER, todos los atributos, todas las claves primarias y todas las claves foráneas.
+
+\begin{center}
+	\scalebox{0.8}{
+		\begin{tikzpicture}[DER]	
+			\node[entity] (sensor)	{Sensor};
+			\node[relationship] (conectadoA) [right=of sensor] {conectado a};
+			\node[entity]		(destacamento) [right=of conectadoA] {Destacamento};
+			\node[relationship] (ubicadoEn)	[below=of sensor] {ubicado en};
+			\node[entity]		(ubicacion)  [below=of ubicadoEn] {Ubicación};
+			\node[relationship] (detectadoPor) [left=of sensor] {detectadoPor};
+			\node[entity]		(vehiculo)	[left=of detectadoPor]	{Vehiculo};
+			\node[relationship]	(perteneceA) [below=of vehiculo] {pertenece a};
+			\node[entity]		(persona)	[below=of perteneceA] {Persona};
+			\node[inheritance]	(inhVehiculo) [left=of vehiculo] {D};
+			\node[entity]		(robado)		[above left=of inhVehiculo] {Robado};
+			\node[entity]		(conOrdenDeDetencion)		[below left=of inhVehiculo] {Con Orden de Detencion};
+			
+			%% Atributos destacamento
+			\node[attributePK] (destacamentoIdDestacamento) [above=of destacamento] {\PK{idDestacamento}};
+			\node[attribute]	(destacamentoNombre) [above right=of destacamento] {nombre};
+			\node[attribute] (destacamentoDireccion) [right=of destacamento] {dirección};
+			\node[attribute] (destacamentoTelefono) [below right=of destacamento] {teléfono};
+			\node[attribute] (destacamentoComuna)	[below=of destacamento] {comuna};
+			
+			%% Atributos persona
+			\node[attributePK] (personaDni)	[above right=of persona] {\PK{dni}};
+			\node[attribute] (personaNombre)	[right=of persona] {nombre};
+			\node[attribute] (personaApellido)	[below right=of persona] {apellido};
+			\node[attribute] (personaDomicilio)	[below=of persona] {domicilio};
+			\node[attribute] (personaTelefono)	[below left=of persona] {telefono};
+			
+			%% Atributos robado
+			\node[attribute] (robadoFechaDenuncia) [left=of robado]	{fechaDenuncia};
+			
+			%% Atributos sensor
+			\node[attributePK] (sensorIdSensor)	[above=of sensor]	{\PK{idSensor}};
+			
+			%%  Atributos ubicacion
+			\node[attributePK] (ubicacionCalle) [above right=of ubicacion] {\PK{calle}};
+			\node[attributePK] (ubicacionAltura) [right=of ubicacion] {\PK{altura}};
+			\node[attribute]	(ubicacionBarrio) [below right=of ubicacion] {barrio};
+			\node[attribute]	(ubicacionCodPostal) [below=of ubicacion] {codPostal};
+			
+			% Atributo vehiculo
+			\node[attributePK] (vehiculoPatente) [above left=of vehiculo, yshift=1cm] {\PK{patente}};
+			\node[attribute] (vehiculoMarca) [above=of vehiculo] {marca};
+			\node[attribute] (vehiculoModelo) [above right=of vehiculo, yshift=1.5cm] {modelo};
+			\node[attribute] (vehiculoColor) [below right=of vehiculo] {color};
+
+			%% Atributo detectadoPor
+			\node[attributePK]	(detectadoPorFecha) [above=of detectadoPor] {fecha};
+			\node[attributePK]	(detectadoPorHora) [above right=of detectadoPor] {hora};
+			\path
+				%% Atributos destacamento
+				(destacamento) edge (destacamentoIdDestacamento)
+				(destacamento) edge (destacamentoNombre)
+				(destacamento) edge (destacamentoDireccion)
+				(destacamento) edge (destacamentoTelefono)
+				(destacamento) edge (destacamentoComuna)
+				
+				%% Atributos persona
+				(persona) edge (personaDni)
+				(persona) edge (personaNombre)
+				(persona) edge (personaApellido)
+				(persona) edge (personaDomicilio)
+				(persona) edge (personaTelefono)
+				
+				%%Atributos robado
+				(robado) edge (robadoFechaDenuncia)
+				
+				%% Atributos sensor
+				(sensor) edge (sensorIdSensor)
+				
+				%% Atributos ubicacion
+				(ubicacion) edge (ubicacionCalle)
+				(ubicacion) edge (ubicacionAltura)
+				(ubicacion) edge (ubicacionBarrio)
+				(ubicacion) edge (ubicacionCodPostal)
+			
+				%% Atributos vehiculo
+				(vehiculo) edge (vehiculoPatente)
+				(vehiculo) edge (vehiculoMarca)
+				(vehiculo) edge (vehiculoModelo)
+				(vehiculo) edge (vehiculoColor)
+				
+				%% Inheritance vehiculo
+				(inhVehiculo) edge node[above, pos=0.5]{tipo} (vehiculo)
+				(inhVehiculo) edge (robado)
+				(inhVehiculo) edge (conOrdenDeDetencion)
+				
+				%%Relacion conectadoA
+				(conectadoA) edge node[above, near end]{N} (sensor)
+				
+				%% Relacion detectado por
+				(detectadoPor) edge (detectadoPorFecha)				
+				(detectadoPor) edge (detectadoPorHora)		
+				%% Relacion pertenece a
+				(perteneceA) edge node[right, near end]{N} (vehiculo)
+				
+				%% Relación ubicado en
+				(ubicadoEn) edge node[right, near end]{1} (sensor)
+
+			;
+			
+			\path[rightOptional]
+				%% Relación conectado a
+				(conectadoA) edge node[above, near end]{1} (destacamento)
+				
+				%% Relación detectado por
+				(detectadoPor) edge node[above, near end]{N} (sensor)
+				(detectadoPor) edge node[above, near end]{M} (vehiculo)
+				
+				%% Relacion pertenece a
+				(perteneceA) edge node[right, near end]{1} (persona)
+				
+				
+				%% Relación ubicado en
+				(ubicadoEn) edge node[right, near end]{1} (ubicacion)
+			;
+		\end{tikzpicture}	
+	}
+\end{center}
+
+\begin{multicols}{2}
+	\paragraph{MER}
+	\begin{itemize}
+		\item[] Sensor(\PK{idSensor}, \FK{calle, altura}, \FK{idDestacamento})
+		\item[] Destacamento(\PK{idDepartamento}, nombre, direccion, telefono, comuna)
+		\item[] Ubicacion(\PK{calle}, \PK{altura}, barrio, codPostal)
+		\item[] Vehiculo(\PK{patente}, marca, modelo, color, \FK{dni})
+		\item[] Persona(\PK{dni}, nombre, apelildo, domicilio, telefono)
+		\item[] Robado(\FPK{patente}, fechaDenuncia)
+		\item[] detectadoPor(\FPK{sensor}, \FPK{patente}, \PK{fecha}, \PK{hora})
+	\end{itemize}
+	
+	\columnbreak
+	
+	\paragraph{Consultas}
+	\begin{itemize}
+		\item Seleccionar todas las alarmas en el rango de fechas deseado desde \textit{detectadoPor}.
+		\item Join con \textit{dectadoPor}, \textit{Sensor} y \textit{Destacamento}. Group by destacamento y count de la cantidad de entradas de cada uno de ellos. Me quedo con los destacamentos con los diez destacamentos con count más alto.
+		\item Join \textit{detectadoPor} y \textit{vehiculo}. Filtrar la entrada correspondiente a la alarma deseada.
+		\item Filtaramos \textit{dectadoPor} por el vehiculo deseado. Ordenando las entradas por fecha y hora.
+	\end{itemize}
+\end{multicols}

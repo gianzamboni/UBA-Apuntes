@@ -1,0 +1,146 @@
+%Considere una base de datos que registra los resultados obtenidos por los estudiantes en diferentes exámenes de diferentes cursos realizados.
+%\begin{enumerate}
+%	\item Construya el DER y MR suponiendo que Examen es una entidad y utilizando relaciones ternarias.
+%	
+%	\item Construya una alternativa usando sólo una relación binaria entre Estudiante y Curso. Asegúrese de que sólo existe una relación
+%	entre un estudiante en particular y un curso, pero puede representar los resultados que un estudiante obtiene en diferentes exámenes.
+%\end{enumerate} 
+
+
+\subsubsection*{a)}
+\begin{center}
+	\textbf{DER}
+	\vspace*{1cm}
+	
+	\scalebox{1}{
+		\begin{tikzpicture}[.style={DER}]
+		%% Entidades; y relaciones
+		\node[entity]		(examen)										{Examen};
+		\node[relationship] (calificaA)			[right=of examen]			{califica a};
+		\node[entity] 		(alumno)			[right=of calificaA]		{Alumno};
+		\node[entity]		(curso)				[below=of calificaA]		{Curso};
+		
+		%% Atributos alumno
+		\node[attributePK]	(alumnoIdAlumno)	[above=of alumno]			{\PK{idAlumno}};
+		\node[attribute]	(alumnoNombre)		[above right=of alumno]		{nombre};
+		\node[attribute]	(alumnoApellido)	[right=of alumno]			{apellido};
+		
+		%% Atributos curso
+		\node[attributePK]	(cursoIdCurso)		[left=of curso]				{\PK{idCurso}};
+		\node[attribute]	(cursoNombre)		[right=of curso]			{nombre};
+		
+		%% Atributos examen
+		\node[attributePK]	(examenIdExamen)	[above=of examen]			{\PK{idExamen}};
+		\node[attribute]	(examenFecha)		[above left=of examen]		{fecha};
+		\node[attribute]	(examenNota)		[left=of examen]			{nota};
+		
+		\path	
+		%%Atributos alumno
+		(alumno)	edge	(alumnoIdAlumno)
+		(alumno)	edge	(alumnoNombre)
+		(alumno)	edge	(alumnoApellido)
+		
+		%%Atributos curso
+		(curso)		edge	(cursoIdCurso)
+		(curso)		edge	(cursoNombre)
+		
+		%% Atributos examen
+		(examen)	edge	(examenIdExamen)
+		(examen)	edge	(examenFecha)
+		(examen)	edge	(examenNota)
+		
+		%% Relacion califica a
+		(calificaA)	edge	node[above, near end] {N}	(examen)
+		(calificaA)	edge	node[above, near end] {1}	(alumno)
+		(calificaA) edge	node[right, near end] {1}	(curso)
+		;		
+		\end{tikzpicture}
+		
+	}
+	
+\end{center}
+
+\vspace*{1cm}
+\begin{multicols}{2}
+	
+	\textbf{MER}
+	
+	Examen	(\PK{idExamen}, fecha, nota)
+	
+	Curso	(\PK{idCurso}, nombre)
+	
+	Alumno	(\PK{idAlumno}, nombre, apellido)
+	
+	califica a(\FPK{idAlumno}, \FPK{idExamen}, \FK{idCurso})
+	
+	\columnbreak
+	
+	\paragraph{Nota:} Este modelo permite que una materia tome más de un parcial a un alumno en la misma fecha. ¿Como arreglaría esto?.
+	
+\end{multicols}
+\newpage
+\subsubsection*{b)}
+\begin{center}
+	\textbf{DER}
+	\vspace*{1cm}
+	
+	\scalebox{1}{
+		\begin{tikzpicture}[.style={DER}]	
+		%% Entidades y realaciones
+		\node[entity]		(curso)														{Curso};
+		\node[relationship]	(evaluaA)			[right=of curso]						{califica a};
+		\node[entity]		(alumno)			[right=of evaluaA]						{Alumno};
+		
+		%% Atributos alumno			
+		\node[attributePK]	(alumnoIdAlumno)	[above=of alumno]						{\PK{idAlumno}};
+		\node[attribute]	(alumnoNombre)		[above right=of alumno]					{nombre};
+		\node[attribute]	(alumnoApellid)		[right=of alumno]						{apellido};
+		
+		%% Atributos curso
+		\node[attributePK]	(cursoIdCurso)		[above=of curso]						{\PK{idCurso}};
+		\node[attribute]	(cursoNombre)		[left=of curso]							{nombre};
+		
+		%% Atributos evalua a
+		\node[attributePK] 	(evaluaFecha)		[below left=of evaluaA]					{\PK{fecha}};
+		\node[attribute] 	(evaluaNota)		[below  right=of evaluaA]				{nota};
+		
+		\path	
+		%% Atributos alumno
+		(alumno)			edge	(alumnoIdAlumno)
+		(alumno)			edge	(alumnoNombre)
+		(alumno)			edge	(alumnoApellido)
+		
+		%%Atributos curso
+		(curso)				edge	(cursoIdCurso)
+		(curso)				edge	(cursoNombre)
+		
+		%%Atributos evaluaA
+		(evaluaA)	edge	node[above, near end] {N} (alumno)
+		(evaluaA) edge	node[above, near end] {M} (curso)
+		
+		%%Relacion evalua A
+		(evaluaA) edge	(evaluaFecha)
+		(evaluaA) edge	(evaluaNota)
+		;		
+		
+		\end{tikzpicture}
+		
+	}
+	
+\end{center}
+
+\vspace*{1cm}
+
+\begin{multicols}{2}
+	\textbf{MER}
+	
+	Examen	(\PK{idExamen}, fecha, nota)
+	
+	Curso	(\PK{idCurso}, nombre)
+	
+	califica a(\FPK{idAlumno}, \FPK{idCurso}, \PK{fecha}, nota)
+	
+	\columnbreak
+	
+	\paragraph{Nota:} Este modelo soluciona el problema del anterior. Ahora una materia solo puede tomar un exámen por fecha a cada alumno.
+\end{multicols}

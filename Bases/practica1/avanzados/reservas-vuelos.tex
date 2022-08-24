@@ -1,0 +1,191 @@
+%Diseñar una base de datos que permita a un usuario consultar y realizar reservas de vuelos. Ademas el usuario puede comprar los billetes a través de la web, sin necesidad de consultar a un agente de viajes.\\
+%Para ingresar, el usuario precisa de un nombre de usuario y una clave. Deben quedar almacenados los datos del usuario (nombre, apellido, domicilio, telefonos) y, en caso que abone con tarjeta de crédito, todos los datos necesarios de la tarjeta. Los vuelos poseen un horario, una tarifa, una compañia aérea, origen y destino, estado del vuelo. Tambien se incluye la cantidad de asientos del vuelo. El usuario podrá saber cuantos asientos libres y ocupados hay así como tambien la categoría de cada asiento. \\
+%El usuario puede reservar y adquirir billetes para uno o mas vuelos y para uno o varios pasajeros en la misma reserva. Tambien debe poder cancelar una reserva y consultar su historial de viajes.\\
+%Tambien debe poder imprimir el/los billete/s que le permita presentarse al checkin. \\
+%Es importante que permita la consulta de los datos de todos los vuelos que ha con-cretado un usuario en particular.\\  
+%También se debe poder consultar, para una fecha dada, la disponibilidad de vuelos en las diferentes aerolíneas\\
+%Incluir una lista de las limitaciones, como clave primaria y restricciones de clave foráneas y cualquier restriccion adicional que crea necesaria.
+
+\begin{center}
+	\scalebox{0.8}{
+		\begin{tikzpicture}[.style={DER}]	
+		
+		%% Entidades y relaciones
+		\node[entity]		(usuario)										{Usuario};
+		\node[relationship]	(realiza)			[right=of usuario]			{realiza};
+		\node[entity]		(reserva)			[right=of realiza, xshift=1cm]			{Reserva};
+		
+		\draw[very thick] ($(usuario.north west)+(-3.5cm,3cm)$)  rectangle ($(reserva.south east)+(5cm,-2.5cm)$);
+		
+		\node[relationship]	(tiene)				[below=of usuario, yshift=-2cm]			{tiene};
+		\node[entity]		(tarjetaCredito)	[below=of tiene] 			{Tarjeta de Credito};
+		\node[relationship]	(paga)			[right=of tarjetaCredito]	{paga};
+		\node[relationship]	(para)				[below=of reserva, yshift=-2cm]			{para};
+		\node[entity]		(pasajero)			[below=of para]				{Pasajero};
+		\node[inheritance]	(inhReserva) 		[right=of reserva]			{D};
+		\node[entity]		(reservaCancelada)	[right=of inhReserva] 		{Cancelada};
+		\node[relationship]	(ocupa)				[right=of para]				{ocupa};
+		\node[entity]		(asiento)			[below=of ocupa]			{Asiento};
+		\node[relationship]	(en)				[right=of asiento]			{en};
+		\node[entity]		(vuelo)				[right=of en]				{Vuelo};
+		\node[relationship]	(organiza)			[above=of vuelo]			{organiza};
+		\node[entity]		(aerolinea)			[above=of organiza]	{Aerolínea};
+		\node[relationship]	(administra)		[above=of reserva, yshift=4cm] 			{administra};
+		\node[entity]		(agenteDeViajes)	[left=of administra]		{Agente de viajes};
+		
+		%% Atributos aerolinea
+		\node[attributePK]	(aerolineaIdAerolinea)	[above right=of aerolinea]	{idAerolinea};
+		\node[attribute]	(aerolineaNombre)		[right=of aerolinea]	{nombre};
+		
+		%% Atributos agente de viaje
+		\node[attributePK]	(agenteDeViajesIdAgente) [left=of agenteDeViajes]	{\PK{idAgente}};
+		
+		%% Atributos asiento
+		\node[attributePK]	(asientoNroAsiento)		[above right=of asiento]	{\PK{nroAsiento}};
+		\node[attribute]	(asientoCategoria)		[below right=of asiento]	{categoria};
+		
+		%% Atributos pasajero
+		\node[attributePK]	(pasajeroDni)			[below=of pasajero]	{\PK{dni}};
+		
+		%% Atributos reserva
+		\node[attributePK]	(reservaIdReserva)		[above right=of reserva]		{\PK{idReserva}};
+		
+		%% Atributos tarjeta de cretido
+		\node[attributePK]	(tarjetaNroTarjeta)		[left=of tarjetaCredito]		{\PK{nroTarjeta}};	
+		
+		%% Atributos usuario
+		\node[attributePK]	(usuarioNombreUsuario)	[above=of usuario, yshift=1cm]	{\PK{nombreUsuario}};
+		\node[attribute]	(usuarioClave) 		 	[above left=of usuario] 		{clave};
+		\node[attribute]	(usuarioNombre) 		[left=of usuario] 				{nombre};
+		\node[attribute]	(usuarioApellido) 		[left=of usuario, yshift=-1cm] 	{apellido};
+		\node[attribute]	(usuarioDomicilio) 		[left=of usuario, yshift=-2cm]	{domicilio};
+		\node[attributeM]	(usuarioTelefonos)		[below right=of usuario] 		{telefonos};
+		
+		%% Atributos vuelo
+		\node[attributePK]	(vueloNroVuelo)			[above right=of vuelo] {\PK{nroVuelo}};
+		\node[attribute]	(vueloHorario)			[right=of vuelo]		{horario};
+		\node[attribute]	(vueloTarifa)			[right=of vuelo, yshift=-1cm] {tarifa};
+		\node[attribute]	(vueloOrigen)			[right=of vuelo, yshift=-2cm] {origen};
+		\node[attribute]	(vueloDestino)			[right=of vuelo, yshift=-3cm] {destino};
+		\node[attribute]	(vueloFecha)			[right=of vuelo, yshift=-4cm] {fecha};
+		\node[attribute]	(vueloCantAsientos)		[right=of vuelo, yshift=-5cm] {cantAsientos};
+		\node[attribute]	(vueloEstado)			[right=of vuelo, yshift=-6cm] {estado};
+		
+		%% Atributos realiza
+		\node[attribute] (realizaFecha)			[above=of realiza]				{fecha};
+		
+		
+		\path
+		%% Atributo aerolinea
+		(aerolinea)	edge (aerolineaIdAerolinea)
+		(aerolinea)	edge (aerolineaNombre)
+		
+		%% Atributo agente de viajes
+		(agenteDeViajes)	edge (agenteDeViajesIdAgente)
+		
+		%% Atributos asiento
+		(asiento)	edge (asientoNroAsiento)
+		(asiento)	edge (asientoCategoria)
+		
+		%% Atributos pasajero
+		(pasajero)	edge (pasajeroDni)
+		
+		%% Atributo reserve
+		(reserva) edge (reservaIdReserva)
+		
+		%% Atributo tarjeta credito
+		(tarjetaCredito)	edge (tarjetaNroTarjeta)
+		
+		%% Atributo usuario
+		(usuario) edge (usuarioNombreUsuario)
+		(usuario) edge (usuarioClave)
+		(usuario) edge (usuarioNombre)
+		(usuario) edge (usuarioApellido)
+		(usuario) edge (usuarioDomicilio)
+		(usuario) edge (usuarioTelefonos)
+		
+		%% Atributos vuelo
+		(vuelo)	edge (vueloNroVuelo)
+		(vuelo)	edge (vueloHorario)
+		(vuelo)	edge[in=west, out=south] (vueloTarifa)
+		(vuelo)	edge[in=west, out=south] (vueloOrigen)
+		(vuelo)	edge[in=west, out=south] (vueloDestino)
+		(vuelo)	edge[in=west, out=south] (vueloFecha)
+		(vuelo)	edge[in=west, out=south] (vueloCantAsientos)
+		(vuelo)	edge[in=west, out=south] (vueloEstado)
+		
+		%% Inheritance reserva
+		(inhReserva) edge (reservaCancelada)
+		
+		%% Relacion en
+		(en) edge node[above, near end]{1} (asiento)
+		(en) edge node[above, near end]{M} (vuelo)
+		%% Relacion ocupa
+		(ocupa) edge[in=-45, out=north] node[above right, near end]{1} (reserva)
+		
+		%% Relacion organiza
+		(organiza) edge node[right, near end]{N} (vuelo)
+		(organiza) edge node[right, near end]{1} (aerolinea)
+		%% Relacion para
+		(para) edge node[left, near end]{M} (pasajero)
+		(para) edge node[left, near end]{N} (reserva)
+		
+		%%Relacion reserva
+		(realiza) edge (realizaFecha)
+		(realiza) edge node[above, near end]{M} (reserva)
+		
+		%%Relacion tiene
+		(tiene)	edge node[left, near end] {M} (tarjetaCredito)
+		
+		;
+		
+		\path[rightOptional]
+		%%Inheritance reserva
+		(inhReserva) edge (reserva)
+		
+		%% Relacion administra
+		(administra) edge node[above, near end]{1} (agenteDeViajes)
+		(administra) edge node[left, near end]{N} ($(usuario.north)+(7cm,3cm)$)
+		
+		%% Relacion ocupa
+		(ocupa) edge node[right, near end]{N} (asiento)
+		
+		%%Relación realiza
+		(realiza) edge node[above, near end]{N} (usuario)
+		
+		%% Relacion tiene
+		(tiene) edge node[left, near end]{1} (usuario)
+		
+		%% Relacion usada en
+		(paga)	edge node[above, near end]{1} (tarjetaCredito)
+		(paga)	edge[out=east, in=south] node[above left , near end]{M} ($(reserva.south)+(-1cm,-2.5cm)$)
+		;
+		\end{tikzpicture}	
+	}
+	
+\end{center}
+\newpage
+\begin{multicols}{2}
+	\paragraph{MER}
+	\begin{itemize}
+		\item[] Usuario(\PK{nombreUsuario}, clave, nombre, apellido, domicilio)
+		\item[] Telefono(\FPK{nombreUsuario}, \PK{nroTelefono})
+		\item[] TarjetaCredito(\PK{nroTarjeta}, \FK{nombreUsuario})
+		\item[] Reserva(\PK{idReserva}, esCancelada)
+		\item[] AgenteViajes(\PK{idAgente})
+		\item[] Pasajero(\PK{dni})
+		\item[] Asiento(\PK{nroAsiento}, categoria, \FK{nroVuelo}, \FK{idReserva})
+		\item[] Vuelo(\PK{nroVuelo}, horario, tarifa, origen, destino, fecha, cantAsientos, estado, \FK{idAerolinea})
+		\item[] Aerolinea(\PK{idAerolinea}, nombre)
+		\item[] realiza(\FPK{nombreUsuario}, \FPK{idReserva}, fecha)
+		\item[] administra(\FPK{nombreUsuario, reserva}, \FK{idAgente})
+		\item[] paga(\FPK{nombreUsuario, reserva}, \FK{nroTarjeta})
+	\end{itemize}
+	
+	\columnbreak
+	\paragraph{Restricciones adicionales:}
+	\begin{itemize}
+		\item La tarjeta de crédito que paga una reserva, debe ser la tarjeta de crédito del usuario que la hizo.
+		\item \red{Si una reserva está cancelada, entonces deja de ocupar los asientos reservados (esto es, se nullea la FK en asiento).}
+	\end{itemize}
+\end{multicols}

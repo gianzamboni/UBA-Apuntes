@@ -1,0 +1,84 @@
+%Una empresa vende productos a varios clientes. Se precisa conocer los datos
+%perso-nales de los clientes (nombres, apellidos, dni, dirección y fecha de nacimiento). Cada 	producto tiene un nombre y un código, así como un precio unitario. Un cliente puede 	comprar varios productos a la empresa, y un mismo producto puede ser comprado por varios clientes.\\
+%Los productos son suministrados por diferentes proveedores. Se debe tener en cuenta
+%que un producto sólo puede ser suministrado por un proveedor, y que un proveedor puede 	suministrar diferentes productos. De cada proveedor se desea conocer el CUIT, nombre y dirección.\\
+
+\begin{center}
+	\scalebox{1}{
+		\begin{tikzpicture}[DER]
+		
+		%% Entidades; y relaciones
+		\node[entity] 		(cliente)							{Cliente};
+		\node[relationship] (compro)		[right=of cliente]	{compró};
+		\node[entity]		(producto)		[right=of compro]	{Producto};
+		\node[relationship]	(provee)		[above=of producto] {provee};
+		\node[entity]		(proveedor)		[above=of provee]	{Proveedor};
+		
+		
+		%% Atributos cliente
+		\node[attributePK] (clienteDni)		[above=of cliente]  {\PK{dni}};
+		\node[attributeM]  (clienteNombres)	[above left=of cliente]  {nombres};
+		\node[attributeM]  (clienteApellidos)	[left=of cliente]  {apellidos};
+		\node[attribute]  (clienteDireccion)	[below left=of cliente]  {dirección};
+		\node[attribute]  (clienteNacimiento)	[below=of cliente]  {nacimiento};
+		
+		%% Atributos Producto
+		\node[attributePK] (productoCodigo)		[above right=of producto] {\PK{código}};
+		\node[attribute] (productoNombre)		[right=of producto] {código};
+		\node[attribute] (productoPrecio)	[below right=of producto] {precio};
+		
+		%% Atributos Proveedor
+		\node[attributePK] (proveedorCuit)		[above left=of proveedor] {\PK{cuit}};
+		\node[attribute] (proveedorNombre)		[above=of proveedor] {nombre};
+		\node[attribute] (proveedorDireccion)	[above right=of proveedor] {dirección};
+		
+		\path
+			%%Ejes cliente
+			(cliente) edge	(clienteDni)
+			(cliente) edge	(clienteNombres)
+			(cliente) edge	(clienteApellidos)
+			(cliente) edge	(clienteDireccion)
+			(cliente) edge  (clienteNacimiento)
+			
+			%% Ejes Producto
+			(producto) edge	(productoCodigo)
+			(producto) edge (productoNombre)
+			(producto) edge	(productoPrecio)
+			
+			%% Ejes proveedor
+			(proveedor) edge	(proveedorCuit)
+			(proveedor) edge	(proveedorNombre)
+			(proveedor) edge	(proveedorDireccion)
+			
+			%% Ejes compró
+			(compro) edge node[above, near end]{N}	(cliente)
+			(compro) edge node[above, near end]{M}	(producto)
+			
+			%% Ejes provee
+			(provee) edge node[left, near end] {1}	(proveedor)
+			(provee) edge node[left, near end] {N}	(producto)
+		;
+		\end{tikzpicture}
+		
+	}
+	\vspace*{1cm}
+	
+	\begin{minipage}{0.5\textwidth}
+		\textbf{MER}
+
+Cliente		(\PK{dni}, direccion, nacimiento)
+
+Nombre		(\FPK{dni}, \PK{nombre})
+
+Apellido	(\FPK{dni}, \PK{apellido})
+
+Producto	(\PK{codigo}, nombre, precio, \FK{cuit})
+
+Proovedor	(\PK{cuit}, nombre, direccion)
+
+compro		(\FPK{dni}, \FPK{codigo})
+
+		
+	\end{minipage}
+	
+\end{center}

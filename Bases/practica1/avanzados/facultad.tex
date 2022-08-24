@@ -1,0 +1,318 @@
+%Se tiene la siguiente información sobre empleados, estudiantes, cursos y departamentos:\\
+%\begin{itemize}
+%
+%  \itemsep=2pt\topsep=0pt\partopsep=0pt \parskip=0pt\parsep=0pt
+%
+%\item Un departamento tiene un nombre y está constituido de empleados (personal administrativo y personal docente) y estudiantes (considerar que un departamento no puede existir sin empleados).
+%\item Un docente es encargado de un solo departamento y dentro del personal admi-nistrativo se pueden tener secretarios, coordinadores y técnicos.
+%\item Cada empleado tiene código, nombre y uno o más teléfonos.
+%\item Pueden haber docentes o administrativos, los coordinadores tienen un e-mail y los técnicos un nivel de estudio. 
+%\item Un docente tiene e-mail y pagina web y existen docentes de tiempo completo o tiempo parcial.
+%\item Un estudiante tiene un código, nombre, mail y el año de ingreso a un departamento.
+%\item Existen alumnos regulares y egresados, para estos últimos es necesario registrar el año de egreso.
+%\item El alumno puede inscribir cursos un semestre dado en una sección dada en un departamento dado y se debe registrar la nota del alumno en el curso.
+%\item Un curso tiene un código, nombre, número de créditos en el departamento donde se dicta, un profesor que dictó el curso en un semestre dado y el número de alumnos que tomaron el curso.
+%\end{itemize}
+%Se espera poder responder a las siguientes consultas:
+%\begin{enumerate}
+%\item Las notas del alumno A en los cursos que tomo en cada semestre de sus estudios.
+%\item El promedio del alumno A durante todo su tiempo de estudios.
+%\item Los cursos que el alumno A tomo en el departamento D.
+%\item Los departamentos en los cuales el alumno A tomo cursos.
+%\item En que departamento el alumno A tomo el curso C.
+%\item El promedio de la sección S del curso C en un semestre dado.
+%\item Cursos que dictó un profesor un determinado semestre.
+%\end{enumerate}
+%Agregar atributos o relaciones si lo considera necesario.
+
+\vspace*{-1.25cm}
+\begin{center}
+	\scalebox{0.8}{
+		\begin{tikzpicture}[.style={DER}]	
+		
+		%% Entidades y relaciones
+		\node[entity]		(departamento)										{Departamento};
+		\node[relationship]	(trabajaEn)			[above=of departamento]			{trabaja en};
+		
+		\node[]		(aTrabajaEn)		[above=of trabajaEn]			{};
+		\node[entity]		(empleado)			[above=of aTrabajaEn]						{Empleado};
+		\node[inheritance]	(inhEmpleado)		[right=of empleado]							{D};
+		\node[entity]		(administrativo)	[above right=of inhEmpleado, yshift=2cm]	{Administrativo};
+		
+		\node[entity]		(docente)			[below right=of inhEmpleado]	{Docente};
+		\node[]				(rDocente)			[right=of docente]				{}; %Auxiliar
+		\node[inheritance]	(inhDocente)		[right=of rDocente]				{D};
+		\node[entity]		(aTiempoCompleto)	[above right=of inhDocente]		{A tiempo completo};
+		\node[entity]		(aTiempoParcial)	[below right=of inhDocente]		{A tiempo parcial};
+		
+		\node[inheritance]	(inhAdministrativo)	[right=of administrativo]		{D};
+		\node[entity]		(coordinador)		[right=of inhAdministrativo]	{Coordinador};
+		\node[entity]		(secretario)		[below=of coordinador]			{Secretario};
+		\node[entity]		(tecnico)			[above=of coordinador]			{Técnico};
+		
+		\node[]				(ltrabajaEn)		[left=of trabajaEn, xshift=-2cm, yshift=1.75cm]				{}; %Auxiliar
+		\node[relationship]	(perteneceA)		[left=of ltrabajaEn]			{pertenece a};
+		\node[]				(lperteneceA)		[left=of perteneceA]			{}; %Auxiliar
+		\node[entity]		(estudiante)		[above=of perteneceA]			{Estudiante};
+		\node[inheritance]	(inhEstudiante)		[above=of estudiante]			{O};
+		\node[entity]		(regular)			[above=of inhEstudiante]	{Regular};
+		\node[entity]		(graduado)			[right=of inhEstudiante]	{Graduado};
+		
+		\node[relationship]	(encargadoDe)		[below=of docente]				{encargado de};
+		\node[relationship]	(egresadoDe)		[right =of estudiante]			{egresado de};
+		
+		\node[weak relationship]	(realiza)			[left=of perteneceA, yshift=-0.5cm]			{realiza};
+		\node[weak entity]		(inscripcion)		[below=of realiza]				{Inscripcion};
+		\node[relationship]		(para)				[below=of inscripcion]	
+		{para};
+		
+		\node[entity]			(curso)				[below=of para]			{Curso};
+		
+		\node[relationship]		(dictadoPor)					[below=of curso]				{dictado por};
+		
+		\node[entity]			(semestre)			[left=of dictadoPor]		{Semestre};
+		
+		\node[]					(pDictadoPorADocente)	[right=of dictadoPor, xshift=15cm]			{};
+		
+		\node[relationship]		(seDivideEn)			[below=of departamento]				{se dividen en};			
+		\node[entity]			(seccion)			[below left=of seDivideEn, yshift=0.5cm]				{Seccion};			
+		
+		\node[relationship]		(dictadoEn)				[left=of seccion]	{dictado en};
+		%% Atributos Coordinador
+		\node[attribute]	(coordinadorEmail)	[right=of coordinador]	{email};
+		
+		%% Atributos curso
+		\node[attributePK]	(cursoIdCurso)					[above left=of curso, yshift=-1cm]	{\PK{codCurso}};
+		\node[attribute]	(cursoNombre)					[above right=of curso]		{nombre};
+		\node[attribute]	(cursoCreditos)					[below=of cursoNombre]		{creditos};
+		
+		%% Atributos Departamento
+		\node[attributePK]	(departamentoIdDpto)	[right=of departamento, yshift=-1cm]	{\PK{idDpto}};
+		\node[attribute]	(departamentoNombre)	[below=of departamentoIdDpto]			{nombre};
+		
+		%		%% Atributos Docente
+		\node[attribute]	(docenteEmail)		[above=of docente]				{email};
+		\node[attribute]	(docentePaginaWeb)	[above right=of docente] 		{paginaWeb};
+		
+		%		%% Atributos Empleado
+		\node[attributeM]	(empleadoTelefono)	[above right=of empleado, xshift=-0.5cm]		{telefonos};
+		\node[attribute]	(empleadoNombre)	[above=of empleado, yshift=0.5cm]		{nombre};
+		\node[attributePK]	(empleadoCodigo)	[above left=of empleado,xshift=0.8cm, yshift=1cm]		{\PK{codigoEmp}};
+		
+		%% Atributos Estudiante
+		\node[attributePK]	(estudianteCodigoEstudiante)	[above left=of estudiante] 		{\PK{codEstudiante}};
+		\node[attribute]	(estudianteNombre)				[below=of estudianteCodigoEstudiante, yshift=0.5cm] 			{nombre};
+		\node[attribute]	(estudianteMail)				[below=of estudianteNombre,yshift=0.5cm]		{mail};
+		
+		%% Atributos Inscripcion
+		\node[attributePK]	(inscripcionNroInscripcion)		[above left=of inscripcion]	{\PK{nroInscripcion}};
+		\node[attribute]		(paraNota)				[above left=of para, yshift=-0.25cm]		{nota};
+		
+		%% Atributos semestre
+		\node[attributePK]	(semestreIdSemestre)			[below left=of semestre]				{\PK{idSemestre}};
+		\node[attribute]	(semestreFechaInicio)			[below =of semestre]		{fechaInicio};
+		\node[attribute]	(semestreFechaFin)				[below right=of semestre]				{fechaFin};
+		
+		
+		%% Atributos Tecnico
+		\node[attribute]	(tecnicoNivelEstudio)			[right=of tecnico]				{nivelEstudio};
+		%				
+		%	
+		%% Atributos egresadoDe
+		\node[attribute]	(egresadoDeAnioEgreso)			[below left=of egresadoDe,xshift=.9cm, yshift=0.5cm]		{añoEgreso};
+		
+		%%Atributos relación perteneceA
+		\node[attribute]	(perteneceAAnioIngreso)			[below right=of perteneceA, xshift=-0.5cm, yshift=0.5cm]			{añoIngreso};
+		
+		
+		%% Atributos sección
+		\node[attributePK]	(seccionIdSeccion)				[above=of seccion]		{\PK{idSeccion}};
+		\node[attribute]	(seccionNombre)					[above left=of seccion]				{nombre};
+		%		
+		
+		%% AUXILIAR
+		\node[]				(lcodCurso)		[left=of cursoIdCurso]	{};
+		
+		\path
+		%%Atributos
+		(coordinador)		edge	(coordinadorEmail)
+		
+		(curso)				edge	(cursoIdCurso)
+		(curso)				edge	(cursoNombre)
+		(curso)				edge	(cursoCreditos)
+		
+		(departamento)		edge	(departamentoIdDpto)
+		(departamento)		edge	(departamentoNombre)
+		
+		(docente)			edge	(docenteEmail)
+		(docente)			edge	(docentePaginaWeb)
+		
+		(empleado)			edge	(empleadoCodigo)
+		(empleado)			edge	(empleadoNombre)
+		(empleado)			edge	(empleadoTelefono)		
+		
+		(estudiante)		edge	(estudianteCodigoEstudiante)
+		(estudiante)		edge	(estudianteMail)
+		(estudiante)		edge	(estudianteNombre)
+		
+		(inscripcion)		edge	(inscripcionNroInscripcion)
+		
+		(seccion)			edge	(seccionIdSeccion)
+		(seccion)			edge	(seccionNombre)
+		
+		(semestre)			edge	(semestreIdSemestre)
+		(semestre)			edge	(semestreFechaInicio)
+		(semestre)			edge	(semestreFechaFin)
+		
+		(tecnico)			edge	(tecnicoNivelEstudio)
+		
+		(inhAdministrativo)	edge	(administrativo)
+		(inhAdministrativo)	edge	(secretario)
+		(inhAdministrativo)	edge	(coordinador)
+		(inhAdministrativo)	edge	(tecnico)
+		
+		(inhDocente)		edge	(docente)
+		(inhDocente)		edge	(aTiempoCompleto)
+		(inhDocente)		edge	(aTiempoParcial)
+		
+		(inhEmpleado)		edge 	(empleado)
+		(inhEmpleado)		edge	(administrativo)
+		(inhEmpleado)		edge	(docente)
+		
+		(inhEstudiante)		edge	(estudiante)
+		(inhEstudiante)		edge	(regular)
+		(inhEstudiante)		edge	(graduado)
+		
+		
+		%	Atributos relaciones	
+		(egresadoDe) 	edge 	(egresadoDeAnioEgreso)
+		(perteneceA)	edge	(perteneceAAnioIngreso)	
+		
+		(para)		edge	(paraNota)
+		%% 	Ejes relaciones
+		(dictadoEn)	edge[out=west, in=320]		node[above right, near end] {N}		(curso)
+		(dictadoEn)	edge						node[above, near end] {M}		(seccion)
+		
+		(egresadoDe)	edge[in=south, out=north] 	node[left, xshift=-0.125cm, pos=0.8]		{N}	(graduado)
+		
+		(encargadoDe)	edge[out=south, in=45]	node[above left, pos=0.9] 	{1}	(departamento)
+		
+		(para)			edge node[right,  near end]{N}	(inscripcion)
+		(para)			edge[in=north, out=west]			(lcodCurso.center)
+		
+		(perteneceA)	edge	node[right, near end]		{M}	(estudiante)
+		
+		(realiza)		edge	node[left,near end]		{M}	(inscripcion)
+		
+		(trabajaEn)		edge	node[right, near end]		{N}	(empleado)
+		(trabajaEn)		edge	node[right, near end]		{1}	(departamento)
+		
+		(seDivideEn)	edge						node[right, near end]		{1}	(departamento)
+		(seDivideEn)	edge[in=east, out=south]	node[below right, near end]		{N}	(seccion)
+		
+		%% PATH AUXILIARES
+		(dictadoPor)	edge 	(pDictadoPorADocente.center)
+		;
+		%		
+		\path[rightOptional]
+		
+		(dictadoPor)				edge					node[right, near end]		{N} (curso)
+		
+		(pDictadoPorADocente.center)edge[out=east, in=330]	node[above right, pos=0.975]{1} (docente)
+		(dictadoPor)				edge[out=west, in=east]	node[above, near end]		{M} (semestre)
+		
+		(egresadoDe)	edge[in=130, out=south] 	node[xshift=-0.35cm, pos=0.95]	{M}	(departamento)
+		
+		(encargadoDe)	edge						node[right, near end] 		{1}	(docente)
+		
+		(para)			edge	node[right, near end]	{1}	(curso)
+		
+		(lcodCurso.center)	edge[in=north, out=south]	node[right, yshift=-0.2cm, xshift=0.2cm, near end]	{1} (semestre)
+		
+		(perteneceA)	edge[in=west, out=south]	node[below, yshift=-0.1cm, pos=0.95]	{N}	(departamento)
+		
+		(realiza)		edge[in=250, out=north]	node[above,near end]	{1} (estudiante)
+		;
+		\end{tikzpicture}	
+	}
+	
+\end{center}
+
+\begin{multicols}{2}
+	\noindent\textbf{MER}
+	
+	Departamento(\PK{idDpto}, nombre, \FK{codigoEmpleado})
+	
+	Empleado(\PK{codigoEmpleado}, nombre, \FK{idDpto})
+	
+	Telefonos(\FPK{codigoEmpleado}, \PK{telefono}, tipoEmpleado)
+	
+	Docente(\FPK{codigoEmpleado}, email, paginaWeb, tipoDocente)
+	
+	Administrativo(\FPK{codigoEmpleado}, tipoAdministrativo)
+	
+	Tecnico(\FPK{codigoEmpleado}, nivelEstudio)
+	
+	Coordinador(\FPK{codigoEmpleado}, email)
+	
+	Estudiante(\PK{codEstudiante}, nombre, mail)
+	
+	Regular(\FPK{codEstudiante})
+	
+	Egresado(\FPK{codEstudiante})
+	
+	Inscripcion(\FPK{codEstudiante}, \PK{nroInscripcion})
+	
+	Curso(\PK{codCurso}, nombre, creditos)
+	
+	Semestre(\PK{idSemestre}, fechaInicio, fechaFin)
+	
+	Seccion(\PK{idSeccion}, nombre, \FK{idDpto})
+	
+	egresadoDe(\FPK{codigoEstudiante}, \FPK{idDpto})
+	
+	para(\FPK{codEstudiante,nroIncripcion}, \FPK{codCurso}, \FK{idSemestre}, nota)
+	
+	dictadoPor(\FPK{codCurso}, \FPK{idSemestre}, \FK{codigoEmp})
+	
+	dictadoEn(\FPK{curso},\FPK{idSeccion})
+	
+	\paragraph{Restricciones adicionales:}
+	\begin{itemize}
+		\item Todos los \textit{codigoEstudiante} en \textit{egresadoEn} son estudiantes graduados
+		\item \textit{codEmpleado} en \textit{Departamento} es el código de un docente.
+		\item \textit{codEmpleead} en \textit{dictadoPor} es el código de un docente.
+		\item El docente que dicta un curso debe pertenecer a alguno de los departamentos en donde se dicta.
+		\item \red{Un curso puede ser dictado en una única sección de un departamento. Osea, si hay dos secciones que dictan el mismo curso, entonces son de distinto departamentos.}
+	\end{itemize}
+	
+	\columnbreak
+	\paragraph{Consultas}
+	
+	\begin{enumerate}[(a)]
+		\item Se pueden conseguir todas las inscpriciones realizadas por el alumno $A$ usando la relación \textit{para} y agruparlas por semestre.
+		
+		\item Se puede calcular a partir de la relación \textit{para}, consiguiendo todas las notas del alumno.
+		
+		\item Se consiguen todas las inscripciones del alumno usando la relación \textit{para}. Para cada par \textit{(semestre, curso)} devuelto, se consigue la entrada correspondiente en \textit{dictadoPor}. De acá, conseguimos el docente que dictó cada curso y, de él, el departamento en el que trabaja.
+		
+		Se filtran todos los cursos que corresponden al departamento $D$. 
+		
+		\item Idem (c) pero se devuelven todos los departamentos conseguidos (eliminando repetidos).
+		
+		\item Se buscan las inscripciones del alumno $A$ que corresponden al curso $C$ en la relación \textit{para}. De aquí se consigue los semestres en los que cursó. Usando la relación \textit{dictadoPor} se consigue el docente y, de ahí, el departamento correspondiente.
+		
+		\item Se buscan todas las inscripciones correspondientes al curso $C$ en el semestre deseado y calculamos el promedio.
+		
+		Si es necesario chequear que el curso pertenece a la sección $S$, entonces solo hay que ver que $S$ pertenezca al departamento que la está dictando ese semestre.
+		
+		\item Se consigue filtrando todas las entradas que corresponden al semestre y al profesor indicado en la relación \textit{dictadoPor}.	
+	\end{enumerate}
+	
+	\paragraph{\red{Notas}}
+	\begin{itemize}
+		\item \red{En una de los puntos aparece una sección salvaje que no se aclara bien lo que es. Por ahora, asumo que son las áreas de cada departamento. Por ejemplo, en Computación, tenemos Algoritmos, Sistemas y Teoría.}
+		\item Por como hice el modelo, un curso puede ser dictado por un único departamento en cada cuatrimestre.
+	\end{itemize}
+	
+\end{multicols}

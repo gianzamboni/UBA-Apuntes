@@ -1,0 +1,143 @@
+%Se desea informatizar la gestión de una empresa de transportes que reparte paquetes
+%por todo el país. Los encargados de llevar los paquetes son los camioneros, de los que se quiere guardar el dni, nombre, apellido, teléfono, dirección, salario y población en la que vive. \\
+%De los paquetes transportados interesa conocer el código de paquete, descripción,
+%destinatario y dirección del destinatario. Un camionero distribuye muchos paquetes, y un paquete sólo puede ser distribuido por un camionero.\\
+%De las provincias a las que llegan los paquetes interesa guardar el código de provincia y el nombre. Un paquete sólo puede llegar a una provincia. Sin embargo, a una provincia 	pueden llegar varios paquetes. \\
+%De los camiones que llevan los camioneros, interesa conocer la matrícula, modelo, tipo y potencia. Un camionero puede conducir diferentes camiones en fechas diferentes, y un camión puede ser conducido por varios camioneros.\\
+
+\begin{center}
+	\textbf{DER}
+	
+	\vspace{1cm}
+	
+	\scalebox{0.85}{
+		\begin{tikzpicture}[.style={DER}]
+		
+		%% Entidades; y relaciones
+		\node[entity]		(paquete)								{Paquete};
+		\node[relationship]	(transporta)	[left=of paquete]		{transporta};
+		\node[entity]		(camionero)		[left=of transporta]	{Camionero};
+		\node[relationship]	(enviadoA)		[below=of paquete]		{enviado a};
+		\node[weak entity]		(direccion)		[below=of enviadoA]		{direccion};
+		\node[weak relationship]	(perteneceA)	[below=of direccion]	{pertenece a};			
+		\node[entity] 		(provincia) 	[below=of perteneceA]		{Provincia};
+		\node[relationship]	(conducidoPor)	[left=of camionero]		{conducido por};
+		\node[entity]		(camion)		[left=of conducidoPor]	{Camion};
+		\node[relationship]	(es)			[below=of camion]		{es};
+		\node[entity]		(modelo)		[below=of es]			{Modelo};
+		\node[relationship]	(viveEn)		[left= of direccion]	{vive en};
+		
+		%% Atributos Camion
+		\node[]				(camionI)			[below=of camion]				{}; %%Auxiliar
+		\node[]				(camionII)			[below=of camionI]				{}; %%Auxiliar
+		\node[]				(camionIII)			[below=of camionII]				{}; %%Auxiliar
+		\node[attributePK]	(camionMatricula)	[above=of camion]				{\PK{matricula}};
+		
+		%% Atributos camionero
+		\node[attributePK]	(camioneroDni)			[above=of camionero]		{\PK{dni}};
+		\node[attribute]	(camioneroNombre)		[right=of camioneroDni]		{nombre};
+		\node[attribute]	(camioneroApellido)		[below left=of camionero, xshift=1cm]		{apellido};
+		\node[attribute]	(camioneroTelefono)		[below right=of camionero]		{telefono};
+		\node[attribute]	(camioneroSalario)		[below left=of camionero, xshift=1.5cm, yshift=-1.5cm]	{salario};
+		
+		%% Atributos direccion
+		\node[attributePK]	(direccionNro)	[above right=of direccion]		{\PK{numero}};
+		\node[attributePK]	(direccionCalle)	[right=of direccion]		{\PK{calle}};
+		\node[attributePK]	(direccionLocalidad)	[below right=of direccion]		{\PK{localidad}};
+		
+		%%Atributos Modelo
+		\node[attributePK]	(modeloNombre)	[left=of modelo]	{\PK{nombreModelo}};
+		\node[attributePK]	(modeloMarca)	[below left=of modelo]	{\PK{marca}};
+		\node[attribute]	(modeloTipo)	[below=of modelo]	{tipo};
+		\node[attribute]	(modeloPotencia)[below right=of modelo]	{potencia};
+		
+		%% Atributos Paquete
+		\node[attributePK]	(paqueteCodigo)			[above=of paquete]			{\PK{codigo}};
+		\node[attribute]	(paqueteDestinatario)	[above right=of paquete]	{destinatario};
+		\node[attribute]	(paqueteDescripcion)	[right=of paquete]	{descripcion};
+		
+		%% Atributos provincia		
+		\node[attributePK]	(provinciaCodigoProvincia)	[right=of provincia]		{\PK{codigoProv}};
+		\node[attribute]	(provinciaNombre)			[below right=of provincia]		{nombre};
+		
+		%%Atributos conducido por
+		\node[attributePK]	(conducidoPorFecha)	[above=of conducidoPor]		{\PK{fecha}};
+		
+		
+		\path
+		%% Atributos camion
+		(camion)	edge  	(camionMatricula)
+		
+		%% Atributos camionero
+		(camionero)	edge	(camioneroDni)
+		(camionero)	edge	(camioneroNombre)
+		(camionero) edge 	(camioneroApellido)	
+		(camionero) edge 	(camioneroTelefono)
+		(camionero) edge 	(camioneroSalario.45)
+		
+		%%Atributos direccion
+		(direccion)	edge	(direccionNro)
+		(direccion)	edge	(direccionCalle)
+		(direccion)	edge	(direccionLocalidad)
+		
+		%% Atributos modelo
+		(modelo)	edge	(modeloNombre)
+		(modelo)	edge	(modeloMarca)
+		(modelo)	edge	(modeloTipo)
+		(modelo)	edge	(modeloPotencia)
+		
+		%% Atributos de paquete
+		(paquete)	edge	(paqueteCodigo)
+		(paquete)	edge	(paqueteDescripcion)
+		(paquete)	edge	(paqueteDestinatario)
+		
+		%% Atributos de provincia
+		(provincia)	edge	(provinciaCodigoProvincia)
+		(provincia)	edge	(provinciaNombre)			
+		
+		%% Relacion conducidoPor
+		(conducidoPor)	edge 	node[above, near end]	{N} (camion)
+		(conducidoPor)	edge	node[above, near end]	{M} (camionero)
+		(conducidoPor)	edge								(conducidoPorFecha)
+		
+		%% Relacion enviadoA
+		(enviadoA)		edge	node[left, near end]	{N}	(paquete)
+		(enviadoA)		edge	node[left, near end]	{1}	(direccion)
+		
+		%% Es
+		(es)			edge	node[left, near end]	{N}	(camion)
+		(es)			edge	node[left, near end]	{1} (modelo)
+		
+		%% Relacion pertenece a
+		(perteneceA)	edge	node[left, near end]	{N}	(direccion)
+		(perteneceA)	edge	node[left, near end]	{1}	(provincia)
+		
+		%% Relacion transporta
+		(transporta)	edge 	node[above, near end] 	{N}	(paquete)
+		(transporta)	edge	node[above, near end] 	{1} (camionero)
+		
+		%% viveEn		
+		(viveEn)	edge[in=south, out=west]	node[right, pos=0.9]	{N}	(camionero)
+		(viveEn)	edge	node[above, near end]	{1}	(direccion)	
+		;	
+		\end{tikzpicture}
+		
+	}
+\end{center}
+\newpage
+\textbf{MER}
+
+Camion	(\PK{matricula}, \FK{nombreModelo, marca})
+
+Modelo (\PK{nombre}, \PK{marca}, tipo, potencia)
+
+Camionero	(\PK{dni}, nombre, apellido, telefono, , salario, \FK{numero, calle, localidad, codigoProv})
+
+Paquete	(\PK{codigo}, descripcion, destinatario, \FK{numero, calle, localidad, codigoProv}, \FK{dni})
+
+Direccion(\PK{numero}, \PK{calle}, \PK{localidad}, \FPK{codigoProv})
+
+Provincia (\PK{codigoProvincia}, nombre)
+
+conducidoPor(\FPK{matricula}, \FPK{dni}, \PK{fecha})
+
